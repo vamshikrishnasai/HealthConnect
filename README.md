@@ -1,6 +1,6 @@
  <div align="center">
 
-<img src="healthconnect-assets/healthconnect-logo.png" alt="HealthConnect Logo" width="180"/>
+<img src="image.png" alt="HealthConnect Logo" width="180"/>
 
 # HealthConnect
 ### Community Healthcare Outreach Platform
