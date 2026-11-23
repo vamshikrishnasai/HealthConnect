@@ -1,14 +1,18 @@
- <div align="center">
-
-  <img src="image.png" alt="HealthConnect Logo" width="180" />
+<div align="center">
+  <img src="./image.png" alt="HealthConnect Logo" width="180" />
 
   <h1>HealthConnect</h1>
   <h3>Community Healthcare Outreach Platform</h3>
 
-  <p><strong>Connecting Communities to Better Healthcare Through Salesforce</strong></p>
+  <p>
+    <strong>Connecting Communities to Better Healthcare Through Salesforce</strong>
+  </p>
 
-  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg" alt="Salesforce Logo" width="150" />
-
+  <img
+    src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg"
+    alt="Salesforce Logo"
+    width="150"
+  />
 </div>
 
 ---
