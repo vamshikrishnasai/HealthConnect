@@ -1,0 +1,22 @@
+<template>
+  <template lwc:if={isAuthenticatedUser}>
+    <div class={logoutBarClass}>
+      <template lwc:if={compact}>
+        <button
+          class="logout-button logout-button--compact"
+          type="button"
+          onclick={handleLogout}
+        >
+          Log out
+        </button>
+      </template>
+      <template lwc:else>
+        <lightning-button
+          label="Log out"
+          variant="base"
+          onclick={handleLogout}
+        ></lightning-button>
+      </template>
+    </div>
+  </template>
+</template>

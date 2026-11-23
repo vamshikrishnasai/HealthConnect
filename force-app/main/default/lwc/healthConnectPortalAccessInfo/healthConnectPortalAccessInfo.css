@@ -1,0 +1,116 @@
+:host {
+  display: block;
+  width: min(100%, 460px);
+  margin: 0 auto;
+  color: #16323a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.access-card {
+  padding: clamp(1.5rem, 4vw, 2.4rem);
+  border: 1px solid #e3eceb;
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgb(22 50 58 / 10%);
+}
+
+.access-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 1.1rem;
+  border-radius: 14px;
+  color: #087f82;
+  background: #e8f6f2;
+}
+
+.access-icon lightning-icon,
+.next-step lightning-icon,
+.privacy-note lightning-icon {
+  --slds-c-icon-color-foreground-default: currentColor;
+}
+
+.eyebrow {
+  margin: 0 0 0.45rem;
+  color: #087f82;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+h1 {
+  margin: 0;
+  color: #16323a;
+  font-size: clamp(1.55rem, 3vw, 2rem);
+  letter-spacing: -0.04em;
+}
+
+.description {
+  margin: 0.8rem 0 0;
+  color: #61777d;
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.next-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 1.15rem;
+  padding: 0.85rem;
+  border: 1px solid #dbece8;
+  border-radius: 12px;
+  color: #276e69;
+  background: #f2faf8;
+}
+
+.next-step lightning-icon {
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+}
+
+.next-step p {
+  margin: 0;
+  color: #41645f;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.sign-in-link {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.15rem;
+  padding: 0.7rem 1rem;
+  border-radius: 11px;
+  color: #ffffff;
+  background: linear-gradient(135deg, #087f82, #06666a);
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.sign-in-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgb(8 127 130 / 20%);
+}
+
+.sign-in-link:focus-visible {
+  outline: 3px solid #41a8a0;
+  outline-offset: 3px;
+}
+
+.privacy-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin: 1rem 0 0;
+  color: #71868a;
+  font-size: 0.72rem;
+}

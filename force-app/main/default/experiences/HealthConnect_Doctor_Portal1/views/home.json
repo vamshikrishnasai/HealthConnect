@@ -1,0 +1,55 @@
+{
+  "appPageId": "1808c1cf-5da3-46a2-94a7-50baf8d0f300",
+  "componentName": "siteforce:sldsOneColLayout",
+  "dataProviders": [],
+  "id": "04995655-e1e2-4f2a-ba00-d17dfb07c199",
+  "label": "Home",
+  "regions": [
+    {
+      "id": "7157cc64-4715-49a5-9515-314421c3360a",
+      "regionName": "header",
+      "type": "region"
+    },
+    {
+      "components": [
+        {
+          "componentAttributes": {},
+          "componentName": "c:healthConnectDoctorDashboard",
+          "id": "e1f34907-74b2-4a04-9b14-3ec2a2cad87e",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        }
+      ],
+      "id": "efe76ef1-7c60-4bc9-ab25-cdc487cf2084",
+      "regionName": "content",
+      "type": "region"
+    },
+    {
+      "id": "9cc85385-b95c-4fac-a760-1b23564eb96d",
+      "regionName": "footer",
+      "type": "region"
+    },
+    {
+      "components": [
+        {
+          "componentAttributes": {
+            "customHeadTags": "",
+            "description": "Secure HealthConnect dashboard for assigned doctor cases and appointments.",
+            "title": "HealthConnect Doctor Dashboard"
+          },
+          "componentName": "forceCommunity:seoAssistant",
+          "id": "430c8b7d-2420-457b-9735-ab5c70e0b38c",
+          "renditionMap": {},
+          "type": "component"
+        }
+      ],
+      "id": "613bec94-314e-45c1-b15f-fa422ea30167",
+      "regionName": "sfdcHiddenRegion",
+      "type": "region"
+    }
+  ],
+  "themeLayoutType": "Inner",
+  "type": "view",
+  "viewType": "home"
+}

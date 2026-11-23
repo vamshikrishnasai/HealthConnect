@@ -1,0 +1,126 @@
+{
+  "activeBrandingSetId" : "112024ec-d74c-4238-a5fa-707294817569",
+  "customCSS" : "@import url('/sfsites/c/resource/HealthConnectPortalStyles');",
+  "developerName" : "service",
+  "id" : "d4472ec7-5141-4fb6-99cf-837e2ca45ab2",
+  "label" : "HealthConnect Patient Portal",
+  "layouts" : {
+    "Inner" : "87733254-3313-41a7-9bb4-8b802ef036c2",
+    "Login" : "81671252-6155-40f8-b469-f0b5cc2e1cc0",
+    "ServiceNotAvailable" : "70720941-f758-494d-a6a1-589bd14be09b"
+  },
+  "type" : "theme",
+  "views" : [ {
+    "componentAttributes" : { },
+    "componentName" : "salesforceIdentity:loginBody2",
+    "id" : "81671252-6155-40f8-b469-f0b5cc2e1cc0",
+    "label" : "Login",
+    "regions" : [ {
+      "id" : "32e633db-1a77-4d33-b16a-11534e880b90",
+      "regionName" : "header",
+      "type" : "region"
+    }, {
+      "id" : "2b220e39-8fe5-4ab5-a4bf-78f77548f753",
+      "regionName" : "content",
+      "type" : "region"
+    }, {
+      "id" : "15414bf9-da14-47e3-9ad1-04b654939c00",
+      "regionName" : "footer",
+      "type" : "region"
+    } ],
+    "type" : "view"
+  }, {
+    "componentAttributes" : {
+      "IsDefaultHeaderHidden" : false,
+      "IsDefaultNotificationsHidden" : false,
+      "fixedPageWidth" : 1140,
+      "isPageWidthFixed" : true
+    },
+    "componentName" : "siteforce:serviceBody",
+    "id" : "87733254-3313-41a7-9bb4-8b802ef036c2",
+    "label" : "Default",
+    "regions" : [ {
+      "id" : "37866621-0206-4221-adac-718b46dcc439",
+      "regionName" : "customHeader",
+      "type" : "region"
+    }, {
+      "id" : "c6a2fa51-132f-48b9-a797-379d56773e4c",
+      "regionName" : "search",
+      "type" : "region"
+    }, {
+      "components" : [ {
+        "componentAttributes" : {
+          "accountManagementLabel" : "Account Management",
+          "communityBuilderLabel" : "Experience Builder",
+          "communitySetupLabel" : "Salesforce Setup",
+          "contactSupportLabel" : "Contact Support",
+          "filterName" : "MyCases",
+          "homeLabel" : "Home",
+          "includeContactSupport" : false,
+          "includeMessages" : false,
+          "loginLabel" : "Login",
+          "logoutLabel" : "Logout",
+          "myAccountLabel" : "My Account",
+          "showAccountManagement" : false,
+          "showUserSettings" : false,
+          "userSettingsLabel" : "My Settings",
+          "viewProfileLabel" : "My Profile"
+        },
+        "componentName" : "selfService:userProfileMenu",
+        "id" : "c108e5d7-da87-4693-95ef-e5a12c8d6159",
+        "renditionMap" : { },
+        "type" : "component"
+      } ],
+      "id" : "a2b627b2-1b86-4859-b1f2-de0380eebf2e",
+      "regionName" : "profileMenu",
+      "type" : "region"
+    }, {
+      "components" : [ {
+        "componentAttributes" : {
+          "NavigationMenuEditorRefresh" : "",
+          "hideAppLauncher" : false,
+          "hideHomeText" : false
+        },
+        "componentName" : "forceCommunity:globalNavigation",
+        "id" : "a414c332-e0c2-4c1f-aecc-64ebc8111771",
+        "renditionMap" : { },
+        "type" : "component"
+      } ],
+      "id" : "e5464119-a798-4aba-bb22-1ac026b80037",
+      "regionName" : "navBar",
+      "type" : "region"
+    }, {
+      "id" : "a5df386d-484e-43b6-8cfe-faa3821ec6b7",
+      "regionName" : "customRegion",
+      "type" : "region"
+    }, {
+      "id" : "966fc406-3a30-4de1-a7ab-c2d70b3ba4f2",
+      "regionName" : "footer",
+      "type" : "region"
+    } ],
+    "type" : "view"
+  }, {
+    "componentAttributes" : {
+      "fixedPageWidth" : 1170,
+      "headerBgColor" : "rgba(0, 0, 0, 0)",
+      "isHeaderPinned" : false,
+      "isHeroUnderHeader" : false,
+      "isPageWidthFixed" : true,
+      "showHeader" : true,
+      "showHero" : true
+    },
+    "componentName" : "siteforce:themeLayoutStarter",
+    "id" : "70720941-f758-494d-a6a1-589bd14be09b",
+    "label" : "ServiceNotAvailable",
+    "regions" : [ {
+      "id" : "e3f80b28-22a7-4fff-a952-807b1ec94c53",
+      "regionName" : "themeHeader",
+      "type" : "region"
+    }, {
+      "id" : "e0c3ae74-6858-4839-a2d8-315e86346614",
+      "regionName" : "themeFooter",
+      "type" : "region"
+    } ],
+    "type" : "view"
+  } ]
+}

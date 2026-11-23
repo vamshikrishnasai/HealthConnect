@@ -1,0 +1,82 @@
+{
+  "type": "sfdc_cms__view",
+  "title": "Home",
+  "contentBody": {
+    "component": {
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "7c41380d-95d8-5ed7-ac7b-bb204fed90c9",
+      "type": "component",
+      "children": [
+        {
+          "id": "f7151173-ee67-5ef3-80bb-7187ca8a663e",
+          "name": "content",
+          "title": "Content",
+          "type": "region",
+          "children": [
+            {
+              "definition": "community_layout:section",
+              "id": "df6fbfb1-ebdd-5e74-a609-51016eaa6615",
+              "type": "component",
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "column",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"df6fbfb1-ebdd-5e74-a609-51016eaa6615\",\"columns\":[{\"UUID\":\"51c87360-2638-56a0-bffb-c3e2919ea337\",\"columnName\":\"Doctor Dashboard\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "flex-start"
+              },
+              "children": [
+                {
+                  "id": "51c87360-2638-56a0-bffb-c3e2919ea337",
+                  "name": "col1",
+                  "title": "Doctor Dashboard",
+                  "type": "region",
+                  "children": [
+                    {
+                      "definition": "c:healthConnectDoctorDashboard",
+                      "id": "6079d823-7bae-506d-8dc5-914893511bd8",
+                      "type": "component",
+                      "attributes": {
+                        "dxpStyle": {}
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "d3752702-6d91-52a0-aae6-5b6dff62192e",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region",
+          "children": [
+            {
+              "definition": "community_builder:seoAssistant",
+              "id": "25be1c02-6be4-5939-b09a-a1a425da1ef2",
+              "type": "component",
+              "attributes": {
+                "customHeadTags": "",
+                "description": "Secure HealthConnect dashboard for assigned doctor cases and appointments.",
+                "dxpStyle": {},
+                "pageTitle": "HealthConnect | Doctor Portal",
+                "recordId": "{!recordId}"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "home"
+  },
+  "urlName": "home"
+}

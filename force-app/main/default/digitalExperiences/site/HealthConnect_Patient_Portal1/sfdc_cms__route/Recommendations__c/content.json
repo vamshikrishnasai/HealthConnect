@@ -1,0 +1,12 @@
+{
+  "type": "sfdc_cms__route",
+  "title": "Recommendations",
+  "contentBody": {
+    "activeViewId": "Recommendations",
+    "configurationTags": [],
+    "pageAccess": "UseParent",
+    "routeType": "custom-recommendations",
+    "urlPrefix": "recommendations"
+  },
+  "urlName": "recommendations"
+}

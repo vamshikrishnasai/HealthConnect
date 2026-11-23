@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Care_Reminder_Required</fullName>
+    <active>true</active>
+    <errorConditionFormula>ISBLANK(Care_Reminder__c)</errorConditionFormula>
+    <errorMessage>Every notification attempt must be linked to a Care Reminder.</errorMessage>
+    <errorDisplayField>Care_Reminder__c</errorDisplayField>
+</ValidationRule>

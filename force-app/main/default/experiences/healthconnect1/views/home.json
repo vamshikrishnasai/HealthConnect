@@ -1,0 +1,46 @@
+{
+  "appPageId" : "8999b0e3-8e49-43b0-baeb-7c6f2c49bd27",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "dataProviders" : [ ],
+  "id" : "14719e7e-adc8-465c-a92a-1ac1f7fabd54",
+  "label" : "Home",
+  "regions" : [ {
+    "id" : "5a04f1cb-b24a-49f9-9c5d-f204a3580642",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:healthConnectPatientDashboard",
+      "id" : "4a04e248-cfd7-43c5-a7bb-9cc7d2ed1087",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "5f10e3a0-f488-42d4-a1dd-46a4fbd514d9",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "577f7bb7-5126-4bb2-82ff-42930fd93780",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "Your HealthConnect patient dashboard for care, immunizations, appointments, and follow-up reminders.",
+        "title" : "HealthConnect Patient Dashboard"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "297fa0c1-f5c2-4bee-91eb-1ca3cbdc2a7d",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "5e3299ad-fcc5-449b-af15-037df9d755ba",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "home"
+}

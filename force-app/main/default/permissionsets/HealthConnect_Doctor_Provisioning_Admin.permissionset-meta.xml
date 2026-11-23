@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <classAccesses>
+        <enabled>true</enabled>
+        <apexClass>HCDoctorProvisioningController</apexClass>
+    </classAccesses>
+    <customPermissions>
+        <enabled>true</enabled>
+        <name>HealthConnect_Doctor_Provisioning</name>
+    </customPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Doctor__c.Contact__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Doctor__c.Email__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Doctor__c.Provisioning_Error__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Doctor__c.Provisioning_Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Doctor__c.User__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <description
+  >Assign only to administrators authorized to provision doctor portal accounts.</description>
+    <label>HealthConnect Doctor Provisioning Admin</label>
+    <objectPermissions>
+        <allowCreate>false</allowCreate>
+        <allowDelete>false</allowDelete>
+        <allowEdit>true</allowEdit>
+        <allowRead>true</allowRead>
+        <modifyAllRecords>false</modifyAllRecords>
+        <object>Doctor__c</object>
+        <viewAllRecords>false</viewAllRecords>
+    </objectPermissions>
+</PermissionSet>

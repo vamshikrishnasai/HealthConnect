@@ -1,0 +1,629 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionCalls>
+        <name>Send_Patient_Care_Reminder</name>
+        <label>Send Patient Care Reminder</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <actionName>emailSimple</actionName>
+        <actionType>emailSimple</actionType>
+        <connector>
+            <targetReference>Mark_Reminder_Sent</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Email_Action_Failed</targetReference>
+        </faultConnector>
+        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <inputParameters>
+            <name>emailAddresses</name>
+            <value>
+                <elementReference>Get_Patient_Record.Email__c</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailSubject</name>
+            <value>
+                <elementReference>Reminder_Email_Subject</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>emailBody</name>
+            <value>
+                <elementReference>Reminder_Email_Body</elementReference>
+            </value>
+        </inputParameters>
+        <inputParameters>
+            <name>senderType</name>
+            <value>
+                <stringValue>DefaultWorkflowUser</stringValue>
+            </value>
+        </inputParameters>
+    </actionCalls>
+    <apiVersion>68.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <decisions>
+        <name>Check_Care_Reminder_Record</name>
+        <label>Check Care Reminder Record</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Check_Reminder_Status</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Care Reminder Found</defaultConnectorLabel>
+        <rules>
+            <name>Care_Reminder_Is_Missing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Care_Reminder.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+            </connector>
+            <label>Care Reminder Is Missing</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Patient_Email</name>
+        <label>Check Patient Email</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Mark_Attempt_Missing_Email</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Email Is Blank</defaultConnectorLabel>
+        <rules>
+            <name>Patient_Email_Is_Present</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Patient_Record.Email__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Send_Patient_Care_Reminder</targetReference>
+            </connector>
+            <label>Patient Email Is Present</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Patient_Record</name>
+        <label>Check Patient Record</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Check_Patient_Email</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Patient Found</defaultConnectorLabel>
+        <rules>
+            <name>Patient_Is_Missing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Patient_Record.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Mark_Attempt_Missing_Patient</targetReference>
+            </connector>
+            <label>Patient Is Missing</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Reminder_Due_Date</name>
+        <label>Check Reminder Due Date</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Mark_Attempt_Not_Due</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Reminder Is Not Due</defaultConnectorLabel>
+        <rules>
+            <name>Reminder_Due_Date_Is_Missing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Care_Reminder.Due_Date__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Mark_Attempt_Missing_Due_Date</targetReference>
+            </connector>
+            <label>Due Date Is Missing</label>
+        </rules>
+        <rules>
+            <name>Reminder_Is_Due</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Care_Reminder.Due_Date__c</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>Current_Date</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Patient_Record</targetReference>
+            </connector>
+            <label>Reminder Is Due</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Reminder_Status</name>
+        <label>Check Reminder Status</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Check_Reminder_Due_Date</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Reminder Is Pending</defaultConnectorLabel>
+        <rules>
+            <name>Reminder_Is_Not_Pending</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Care_Reminder.Reminder_Status__c</leftValueReference>
+                <operator>NotEqualTo</operator>
+                <rightValue>
+                    <stringValue>Pending</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Mark_Attempt_Reminder_Not_Pending</targetReference>
+            </connector>
+            <label>Reminder Is Not Pending</label>
+        </rules>
+    </decisions>
+    <description>Processes a committed notification reservation on an after-commit asynchronous path. The flow does not automatically retry and an email action completing does not confirm inbox delivery.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>Current_Date</name>
+        <dataType>Date</dataType>
+        <expression>$Flow.CurrentDate</expression>
+    </formulas>
+    <formulas>
+        <name>Reminder_Email_Subject</name>
+        <dataType>String</dataType>
+        <expression>"HealthConnect care reminder: " &amp; TEXT(Get_Care_Reminder.Reminder_Type__c) &amp; " due " &amp; TEXT(Get_Care_Reminder.Due_Date__c)</expression>
+    </formulas>
+    <formulas>
+        <name>Reminder_Email_Body</name>
+        <dataType>String</dataType>
+        <expression>"Hello," &amp; BR() &amp; BR() &amp; "This is a reminder that your " &amp; TEXT(Get_Care_Reminder.Reminder_Type__c) &amp; " care reminder is due on " &amp; TEXT(Get_Care_Reminder.Due_Date__c) &amp; ". Please contact your care team if you need assistance." &amp; BR() &amp; BR() &amp; "HealthConnect"</expression>
+    </formulas>
+    <interviewLabel>Process Care Reminder Notification Attempt {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Process Care Reminder Notification Attempt</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Care_Reminder</name>
+        <label>Get Care Reminder</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Care_Reminder_Record</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Care_Reminder__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Care_Reminder__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Patient_Record</name>
+        <label>Get Patient Record</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Patient_Record</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Care_Reminder.Patient__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Patient__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Mark_Attempt_Delivery_Unverified</name>
+        <label>Mark Attempt Delivery Unverified</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Attempt_Status__c</field>
+            <value>
+                <stringValue>Delivery Unverified</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Diagnostic__c</field>
+            <value>
+                <stringValue>A processing step failed. Reconcile internally before any retry; email delivery is unverified.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Attempt_Email_Action_Completed</name>
+        <label>Mark Attempt Email Action Completed</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Attempt_Status__c</field>
+            <value>
+                <stringValue>Email Action Completed</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Diagnostic__c</field>
+            <value>
+                <stringValue>Email action completed; inbox delivery has not been verified.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Attempt_Email_Action_Failed</name>
+        <label>Mark Attempt Email Action Failed</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <connector>
+            <targetReference>Mark_Reminder_Email_Action_Failed</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Attempt_Status__c</field>
+            <value>
+                <stringValue>Email Action Failed</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Diagnostic__c</field>
+            <value>
+                <stringValue>The email action reported a failure. Reconcile internally before any retry.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Attempt_Missing_Due_Date</name>
+        <label>Mark Attempt Missing Due Date</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <connector>
+            <targetReference>Mark_Reminder_Missing_Due_Date</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Attempt_Status__c</field>
+            <value>
+                <stringValue>Missing Due Date</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Diagnostic__c</field>
+            <value>
+                <stringValue>The reminder has no due date. Add the date and reconcile before any retry.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Attempt_Missing_Email</name>
+        <label>Mark Attempt Missing Email</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <connector>
+            <targetReference>Mark_Reminder_Missing_Email</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Attempt_Status__c</field>
+            <value>
+                <stringValue>Missing Email</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Diagnostic__c</field>
+            <value>
+                <stringValue>The patient email field is blank. Update contact details and reconcile before any retry.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Attempt_Missing_Patient</name>
+        <label>Mark Attempt Missing Patient</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <connector>
+            <targetReference>Mark_Reminder_Missing_Patient</targetReference>
+        </connector>
+        <inputAssignments>
+            <field>Attempt_Status__c</field>
+            <value>
+                <stringValue>Missing Patient</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Diagnostic__c</field>
+            <value>
+                <stringValue>No patient record was found. Reconcile the reminder relationship before any retry.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Attempt_Not_Due</name>
+        <label>Mark Attempt Not Due</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Attempt_Status__c</field>
+            <value>
+                <stringValue>Not Due</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Diagnostic__c</field>
+            <value>
+                <stringValue>The due date is in the future at processing time. Reconcile before any retry.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Attempt_Reminder_Not_Pending</name>
+        <label>Mark Attempt Reminder Not Pending</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <inputAssignments>
+            <field>Attempt_Status__c</field>
+            <value>
+                <stringValue>Reminder Not Pending</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Diagnostic__c</field>
+            <value>
+                <stringValue>The reminder is no longer Pending. No email was sent.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Reminder_Email_Action_Failed</name>
+        <label>Mark Reminder Email Action Failed</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Care_Reminder__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Notification_Outcome__c</field>
+            <value>
+                <stringValue>Email Action Failed</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Notification_Diagnostic__c</field>
+            <value>
+                <stringValue>The email action reported a failure. Reconcile internally before any retry.</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Care_Reminder__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Reminder_Missing_Due_Date</name>
+        <label>Mark Reminder Missing Due Date</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Care_Reminder__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Notification_Outcome__c</field>
+            <value>
+                <stringValue>Missing Due Date</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Notification_Diagnostic__c</field>
+            <value>
+                <stringValue>No due date is available. Add a due date and reconcile before any retry.</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Care_Reminder__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Reminder_Missing_Email</name>
+        <label>Mark Reminder Missing Email</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Care_Reminder__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Notification_Outcome__c</field>
+            <value>
+                <stringValue>Missing Email</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Notification_Diagnostic__c</field>
+            <value>
+                <stringValue>The patient email field is blank. Update contact details and reconcile before any retry.</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Care_Reminder__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Reminder_Missing_Patient</name>
+        <label>Mark Reminder Missing Patient</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Care_Reminder__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Notification_Outcome__c</field>
+            <value>
+                <stringValue>Missing Patient</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Notification_Diagnostic__c</field>
+            <value>
+                <stringValue>No patient record was found. Reconcile the reminder relationship before any retry.</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Care_Reminder__c</object>
+    </recordUpdates>
+    <recordUpdates>
+        <name>Mark_Reminder_Sent</name>
+        <label>Mark Reminder Sent</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Mark_Attempt_Delivery_Unverified</targetReference>
+        </faultConnector>
+        <connector>
+            <targetReference>Mark_Attempt_Email_Action_Completed</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Care_Reminder__c</elementReference>
+            </value>
+        </filters>
+        <inputAssignments>
+            <field>Reminder_Status__c</field>
+            <value>
+                <stringValue>Sent</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Notification_Outcome__c</field>
+            <value>
+                <stringValue>Email Action Completed</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Notification_Diagnostic__c</field>
+            <value>
+                <stringValue>Email action completed; inbox delivery has not been verified.</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Care_Reminder__c</object>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <filters>
+            <field>Attempt_Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Reserved</stringValue>
+            </value>
+        </filters>
+        <object>Care_Reminder_Notification_Attempt__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <scheduledPaths>
+            <connector>
+                <targetReference>Get_Care_Reminder</targetReference>
+            </connector>
+            <pathType>AsyncAfterCommit</pathType>
+        </scheduledPaths>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Draft</status>
+</Flow>

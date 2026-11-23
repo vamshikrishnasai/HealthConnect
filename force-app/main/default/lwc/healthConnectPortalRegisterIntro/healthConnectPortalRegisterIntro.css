@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  width: min(100%, 500px);
+  margin: 0 auto 1rem;
+  color: #16323a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.register-intro {
+  padding: 0 0.25rem;
+}
+
+.register-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 0.9rem;
+  border: 1px solid #d4e8e3;
+  border-radius: 13px;
+  color: #087f82;
+  background: #e9f6f3;
+}
+
+.register-icon lightning-icon {
+  --slds-c-icon-color-foreground-default: currentColor;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  color: #087f82;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+h1 {
+  margin: 0;
+  color: #16323a;
+  font-size: clamp(1.55rem, 3vw, 1.9rem);
+  letter-spacing: -0.04em;
+}
+
+p:last-child {
+  margin: 0.4rem 0 0;
+  color: #61777d;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .register-intro {
+    padding: 0;
+  }
+}

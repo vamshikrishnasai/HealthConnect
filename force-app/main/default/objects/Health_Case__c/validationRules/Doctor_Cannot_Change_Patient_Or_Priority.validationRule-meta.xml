@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Doctor_Cannot_Change_Patient_Or_Priority</fullName>
+    <active>true</active>
+    <description>Required fields cannot be restricted through profile field permissions, so this rule prevents doctors from changing case intake associations or priority.</description>
+    <errorConditionFormula>AND(
+    $Profile.Name = "HealthConnect Doctor",
+    OR(
+        ISCHANGED(Patient__c),
+        ISCHANGED(Case_Priority__c)
+    )
+)</errorConditionFormula>
+    <errorMessage>Doctors cannot change the patient or priority on a Health Case.</errorMessage>
+</ValidationRule>

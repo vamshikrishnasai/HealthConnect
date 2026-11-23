@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>HealthConnect Portal Access Link</masterLabel>
+    <description
+  >Provides a sign-in page link for patients to request secure portal access.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+    </targets>
+</LightningComponentBundle>

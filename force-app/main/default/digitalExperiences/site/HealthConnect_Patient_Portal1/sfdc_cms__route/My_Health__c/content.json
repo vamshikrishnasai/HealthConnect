@@ -1,0 +1,12 @@
+{
+  "type": "sfdc_cms__route",
+  "title": "My Health",
+  "contentBody": {
+    "activeViewId": "My_Health",
+    "configurationTags": [],
+    "pageAccess": "UseParent",
+    "routeType": "custom-my-health",
+    "urlPrefix": "my-health"
+  },
+  "urlName": "my-health"
+}

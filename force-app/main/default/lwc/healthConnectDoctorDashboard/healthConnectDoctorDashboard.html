@@ -1,0 +1,493 @@
+<template>
+  <main class="doctor-shell">
+    <div class="dashboard-topbar">
+      <div class="brand-lockup">
+        <img
+          class="brand-logo"
+          src={healthConnectLogoUrl}
+          alt="Health Connect"
+        />
+        <span>Health Connect</span>
+      </div>
+      <div class="header-actions">
+        <div class="profile-menu">
+          <button
+            class="profile-trigger"
+            type="button"
+            aria-expanded={isProfileOpen}
+            aria-controls="doctor-profile-panel"
+            onclick={toggleProfile}
+          >
+            <span class="profile-avatar" aria-hidden="true"></span>
+            <span>Profile</span>
+          </button>
+          <template lwc:if={isProfileOpen}>
+            <section
+              class="profile-panel"
+              id="doctor-profile-panel"
+              aria-label="Doctor profile"
+              role="region"
+            >
+              <template lwc:if={doctorProfile}>
+                <div class="profile-panel-heading">
+                  <div>
+                    <p class="profile-panel-kicker">YOUR ACCOUNT</p>
+                    <h2>{doctorProfile.name}</h2>
+                  </div>
+                  <template lwc:if={isEditingProfile}>
+                    <span class="profile-edit-badge">Editing</span>
+                  </template>
+                </div>
+                <template lwc:if={isEditingProfile}>
+                  <div class="profile-form">
+                    <label class="form-control">
+                      <span>Phone</span>
+                      <input
+                        class="form-input"
+                        type="tel"
+                        value={profileDraft.phoneNumber}
+                        data-field="phoneNumber"
+                        onchange={handleProfileFieldChange}
+                        disabled={isSavingProfile}
+                        maxlength="40"
+                      />
+                    </label>
+                    <label class="form-control">
+                      <span>Specialization</span>
+                      <select
+                        class="form-input"
+                        data-field="specialization"
+                        onchange={handleProfileFieldChange}
+                        disabled={isSavingProfile}
+                      >
+                        <template
+                          for:each={profileDraft.specializationOptions}
+                          for:item="option"
+                        >
+                          <option
+                            key={option.value}
+                            value={option.value}
+                            selected={option.selected}
+                          >
+                            {option.label}
+                          </option>
+                        </template>
+                      </select>
+                    </label>
+                    <label class="form-control">
+                      <span>Healthcare facility</span>
+                      <input
+                        class="form-input"
+                        type="text"
+                        value={profileDraft.healthcareFacility}
+                        data-field="healthcareFacility"
+                        onchange={handleProfileFieldChange}
+                        disabled={isSavingProfile}
+                        maxlength="150"
+                      />
+                    </label>
+                    <label class="form-control">
+                      <span>District</span>
+                      <input
+                        class="form-input"
+                        type="text"
+                        value={profileDraft.district}
+                        data-field="district"
+                        onchange={handleProfileFieldChange}
+                        disabled={isSavingProfile}
+                        maxlength="100"
+                      />
+                    </label>
+                    <label class="form-control">
+                      <span>Availability</span>
+                      <select
+                        class="form-input"
+                        data-field="availabilityStatus"
+                        onchange={handleProfileFieldChange}
+                        disabled={isSavingProfile}
+                      >
+                        <template
+                          for:each={profileDraft.availabilityOptions}
+                          for:item="option"
+                        >
+                          <option
+                            key={option.value}
+                            value={option.value}
+                            selected={option.selected}
+                          >
+                            {option.label}
+                          </option>
+                        </template>
+                      </select>
+                    </label>
+                  </div>
+                  <div class="profile-form-actions">
+                    <template lwc:if={profileSaveError}>
+                      <p class="profile-save-error" role="alert">
+                        {profileSaveError}
+                      </p>
+                    </template>
+                    <button
+                      class="action-button action-button--secondary"
+                      type="button"
+                      onclick={cancelProfileEdit}
+                      disabled={isSavingProfile}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      class="action-button action-button--primary"
+                      type="button"
+                      onclick={saveProfile}
+                      disabled={isSavingProfile}
+                    >
+                      <template lwc:if={isSavingProfile}> Saving… </template>
+                      <template lwc:else>Save changes</template>
+                    </button>
+                  </div>
+                </template>
+                <template lwc:else>
+                  <dl class="profile-details profile-details--panel">
+                    <div>
+                      <dt>Specialization</dt>
+                      <dd>{doctorProfile.specializationLabel}</dd>
+                    </div>
+                    <div>
+                      <dt>Facility</dt>
+                      <dd>{doctorProfile.facilityLabel}</dd>
+                    </div>
+                    <div>
+                      <dt>District</dt>
+                      <dd>{doctorProfile.districtLabel}</dd>
+                    </div>
+                    <div>
+                      <dt>Availability</dt>
+                      <dd>{doctorProfile.availabilityLabel}</dd>
+                    </div>
+                    <div>
+                      <dt>Email</dt>
+                      <dd>{doctorProfile.emailLabel}</dd>
+                    </div>
+                    <div>
+                      <dt>Phone</dt>
+                      <dd>{doctorProfile.phoneLabel}</dd>
+                    </div>
+                  </dl>
+                  <div class="profile-form-actions">
+                    <template lwc:if={profileSaveMessage}>
+                      <p class="profile-save-success" role="status">
+                        {profileSaveMessage}
+                      </p>
+                    </template>
+                    <button
+                      class="action-button action-button--primary"
+                      type="button"
+                      onclick={editProfile}
+                    >
+                      Edit profile
+                    </button>
+                  </div>
+                </template>
+              </template>
+              <template lwc:elseif={doctorProfileError}>
+                <div class="profile-warning">
+                  <h2>Profile unavailable</h2>
+                  <p>{doctorProfileError}</p>
+                </div>
+              </template>
+              <template lwc:else>
+                <p class="profile-panel-empty">
+                  Profile details are loading. Please try again shortly.
+                </p>
+              </template>
+            </section>
+          </template>
+        </div>
+        <c-health-connect-portal-logout
+          compact
+        ></c-health-connect-portal-logout>
+      </div>
+    </div>
+
+    <header class="dashboard-banner">
+      <div class="banner-main">
+        <p class="banner-eyebrow">DOCTOR WORKSPACE</p>
+        <h1>Hello, {doctorName}</h1>
+        <p class="banner-intro">
+          Your care schedule and assigned patient cases, all in one place.
+        </p>
+        <div class="dashboard-counts">
+          <div class="count-tile count-tile--cases">
+            <span class="count-value">{caseCount}</span>
+            <span class="count-label">Assigned cases</span>
+          </div>
+          <div class="count-tile count-tile--appointments">
+            <span class="count-value">{appointmentCount}</span>
+            <span class="count-label">Upcoming appointments</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <template lwc:if={isLoading}>
+      <section class="state-panel" role="status">
+        <span class="loading-spinner" aria-hidden="true"></span>
+        <p>Loading your assigned patients, cases, and appointments…</p>
+      </section>
+    </template>
+    <template lwc:elseif={errorMessage}>
+      <section class="state-panel error-panel" role="alert">
+        <h2>We couldn’t load your dashboard</h2>
+        <p>{errorMessage}</p>
+      </section>
+    </template>
+    <template lwc:else>
+      <template lwc:if={hasAppointments}>
+        <section class="appointment-section" aria-label="Upcoming appointments">
+          <div class="section-heading">
+            <div>
+              <p class="section-kicker">YOUR SCHEDULE</p>
+              <h2>Upcoming appointments</h2>
+            </div>
+          </div>
+          <div class="appointment-list">
+            <template for:each={appointments} for:item="appointment">
+              <article class="appointment-card" key={appointment.Id}>
+                <div class="appointment-date">
+                  <strong>{appointment.appointmentDateLabel}</strong>
+                  <span>{appointment.appointmentTimeLabel}</span>
+                </div>
+                <div class="appointment-details">
+                  <h3>{appointment.patientName}</h3>
+                  <p>
+                    {appointment.Name}
+                    <span class="appointment-status">
+                      {appointment.appointmentStatus}
+                    </span>
+                  </p>
+                  <p>
+                    Case: {appointment.caseNameLabel} · {appointment.notesLabel}
+                  </p>
+                </div>
+              </article>
+            </template>
+          </div>
+        </section>
+      </template>
+
+      <section class="case-section" aria-label="Assigned health cases">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">PATIENT CARE</p>
+            <h2>Assigned health cases</h2>
+          </div>
+        </div>
+        <template lwc:if={hasCases}>
+          <div class="case-list">
+            <template for:each={cases} for:item="caseRecord">
+              <article class="case-card" key={caseRecord.Id}>
+                <header class="case-heading">
+                  <div>
+                    <h3>{caseRecord.patientName}</h3>
+                    <p>{caseRecord.Name}</p>
+                  </div>
+                  <div class="case-heading-meta">
+                    <span class={caseRecord.statusClass}>
+                      {caseRecord.caseStatus}
+                    </span>
+                    <span class="case-date">{caseRecord.createdDateLabel}</span>
+                    <button
+                      class="edit-button"
+                      type="button"
+                      aria-label="Edit case review"
+                      title="Edit case review"
+                      data-case-id={caseRecord.Id}
+                      onclick={editCaseReview}
+                      disabled={caseRecord.isSaving}
+                    >
+                      <span class="edit-button-icon" aria-hidden="true">✎</span>
+                      Edit review
+                    </button>
+                  </div>
+                </header>
+
+                <dl class="patient-details">
+                  <div>
+                    <dt>Date of birth</dt>
+                    <dd>{caseRecord.patientDateOfBirthLabel}</dd>
+                  </div>
+                  <div>
+                    <dt>Phone</dt>
+                    <dd>{caseRecord.patientPhoneNumberLabel}</dd>
+                  </div>
+                  <div>
+                    <dt>Priority</dt>
+                    <dd>{caseRecord.casePriority}</dd>
+                  </div>
+                  <div>
+                    <dt>Follow-up date</dt>
+                    <dd>{caseRecord.followUpDateLabel}</dd>
+                  </div>
+                </dl>
+
+                <div class="clinical-details">
+                  <div>
+                    <h4>Symptoms</h4>
+                    <p>{caseRecord.symptomsLabel}</p>
+                  </div>
+                </div>
+
+                <template lwc:if={caseRecord.isEditing}>
+                  <div class="review-fields">
+                    <label class="form-control">
+                      <span>Diagnosis</span>
+                      <input
+                        class="form-input"
+                        type="text"
+                        value={caseRecord.diagnosisDraft}
+                        data-case-id={caseRecord.Id}
+                        data-field="diagnosisDraft"
+                        onchange={handleCaseFieldChange}
+                        disabled={caseRecord.isSaving}
+                        maxlength="255"
+                      />
+                    </label>
+                    <label class="form-control form-control--wide">
+                      <span>Doctor recommendation</span>
+                      <textarea
+                        class="form-input form-textarea"
+                        data-case-id={caseRecord.Id}
+                        data-field="recommendationDraft"
+                        onchange={handleCaseFieldChange}
+                        disabled={caseRecord.isSaving}
+                        maxlength="32768"
+                      >
+{caseRecord.recommendationDraft}</textarea>
+                    </label>
+                    <label class="form-control">
+                      <span>Case status</span>
+                      <select
+                        class="form-input"
+                        data-case-id={caseRecord.Id}
+                        data-field="caseStatusDraft"
+                        onchange={handleCaseFieldChange}
+                        disabled={caseRecord.isSaving}
+                      >
+                        <template
+                          for:each={caseRecord.statusOptions}
+                          for:item="option"
+                        >
+                          <option
+                            key={option.value}
+                            value={option.value}
+                            selected={option.selected}
+                          >
+                            {option.label}
+                          </option>
+                        </template>
+                      </select>
+                    </label>
+                    <label class="checkbox-control">
+                      <input
+                        type="checkbox"
+                        checked={caseRecord.appointmentRequiredDraft}
+                        data-case-id={caseRecord.Id}
+                        data-field="appointmentRequiredDraft"
+                        onchange={handleCaseFieldChange}
+                        disabled={caseRecord.isSaving}
+                      />
+                      <span>Appointment required</span>
+                    </label>
+                    <label class="form-control">
+                      <span>Follow-up date</span>
+                      <input
+                        class="form-input"
+                        type="date"
+                        value={caseRecord.followUpDateDraft}
+                        data-case-id={caseRecord.Id}
+                        data-field="followUpDateDraft"
+                        onchange={handleCaseFieldChange}
+                        disabled={caseRecord.isSaving}
+                      />
+                    </label>
+                  </div>
+                  <div class="save-row">
+                    <template lwc:if={caseRecord.saveMessage}>
+                      <p
+                        class={caseRecord.saveMessageClass}
+                        role={caseRecord.saveMessageRole}
+                      >
+                        {caseRecord.saveMessage}
+                      </p>
+                    </template>
+                    <div class="save-actions">
+                      <template lwc:if={caseRecord.hasSavedReview}>
+                        <button
+                          class="action-button action-button--secondary"
+                          type="button"
+                          data-case-id={caseRecord.Id}
+                          onclick={cancelCaseReview}
+                          disabled={caseRecord.isSaving}
+                        >
+                          Cancel
+                        </button>
+                      </template>
+                      <button
+                        class="action-button action-button--primary"
+                        type="button"
+                        data-case-id={caseRecord.Id}
+                        onclick={saveCaseReview}
+                        disabled={caseRecord.isSaving}
+                      >
+                        <template lwc:if={caseRecord.isSaving}>
+                          Saving…
+                        </template>
+                        <template lwc:else>Save case review</template>
+                      </button>
+                    </div>
+                  </div>
+                </template>
+                <template lwc:else>
+                  <div class="review-summary">
+                    <div class="summary-item">
+                      <h4>Diagnosis</h4>
+                      <p>{caseRecord.diagnosisLabel}</p>
+                    </div>
+                    <div class="summary-item recommendation-item">
+                      <h4>Doctor recommendation</h4>
+                      <p>{caseRecord.recommendationLabel}</p>
+                    </div>
+                    <div class="summary-item">
+                      <h4>Appointment</h4>
+                      <p>{caseRecord.appointmentRequiredLabel}</p>
+                    </div>
+                  </div>
+                  <div class="save-row">
+                    <template lwc:if={caseRecord.saveMessage}>
+                      <p
+                        class={caseRecord.saveMessageClass}
+                        role={caseRecord.saveMessageRole}
+                      >
+                        {caseRecord.saveMessage}
+                      </p>
+                    </template>
+                  </div>
+                </template>
+              </article>
+            </template>
+          </div>
+        </template>
+        <template lwc:else>
+          <div class="empty-state">
+            <h3>No cases are assigned to you</h3>
+            <p>
+              When a Health Case is assigned to your user, it will appear here.
+              Contact your HealthConnect administrator if you expected to see a
+              case.
+            </p>
+          </div>
+        </template>
+      </section>
+    </template>
+  </main>
+</template>

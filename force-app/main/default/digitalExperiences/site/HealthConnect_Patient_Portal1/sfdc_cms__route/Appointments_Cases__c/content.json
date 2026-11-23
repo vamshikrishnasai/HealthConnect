@@ -1,0 +1,12 @@
+{
+  "type": "sfdc_cms__route",
+  "title": "Appointments (Cases)",
+  "contentBody": {
+    "activeViewId": "Appointments_Cases",
+    "configurationTags": [],
+    "pageAccess": "UseParent",
+    "routeType": "custom-appointments-cases",
+    "urlPrefix": "appointments-cases"
+  },
+  "urlName": "appointments-cases"
+}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Attempt_Status__c</fullName>
+    <label>Attempt Status</label>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Reserved</fullName>
+                <default>true</default>
+                <label>Reserved</label>
+            </value>
+            <value>
+                <fullName>Not Due</fullName>
+                <default>false</default>
+                <label>Not Due</label>
+            </value>
+            <value>
+                <fullName>Reminder Not Pending</fullName>
+                <default>false</default>
+                <label>Reminder Not Pending</label>
+            </value>
+            <value>
+                <fullName>Missing Due Date</fullName>
+                <default>false</default>
+                <label>Missing Due Date</label>
+            </value>
+            <value>
+                <fullName>Missing Patient</fullName>
+                <default>false</default>
+                <label>Missing Patient</label>
+            </value>
+            <value>
+                <fullName>Missing Email</fullName>
+                <default>false</default>
+                <label>Missing Email</label>
+            </value>
+            <value>
+                <fullName>Email Action Completed</fullName>
+                <default>false</default>
+                <label>Email Action Completed</label>
+            </value>
+            <value>
+                <fullName>Email Action Failed</fullName>
+                <default>false</default>
+                <label>Email Action Failed</label>
+            </value>
+            <value>
+                <fullName>Delivery Unverified</fullName>
+                <default>false</default>
+                <label>Delivery Unverified</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

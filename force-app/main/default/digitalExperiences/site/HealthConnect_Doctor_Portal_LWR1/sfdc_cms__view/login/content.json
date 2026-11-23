@@ -1,0 +1,103 @@
+{
+  "type": "sfdc_cms__view",
+  "title": "Login",
+  "contentBody": {
+    "component": {
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "8c139cbc-ccf1-58b0-967b-57a65e5c2cc6",
+      "type": "component",
+      "children": [
+        {
+          "id": "5e96d2da-4a80-5e8b-99fe-657319f7fd53",
+          "name": "content",
+          "title": "Content",
+          "type": "region",
+          "children": [
+            {
+              "definition": "community_layout:section",
+              "id": "5dd6c8ce-cf09-5288-a641-3aa3b1c8f295",
+              "type": "component",
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "row",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"5dd6c8ce-cf09-5288-a641-3aa3b1c8f295\",\"columns\":[{\"UUID\":\"e8103972-3196-508c-ae34-3678b3a649e3\",\"columnName\":\"Welcome\",\"columnKey\":\"col1\",\"columnWidth\":\"6\",\"seedComponents\":null},{\"UUID\":\"d784028d-c755-513a-ac19-f1c944287427\",\"columnName\":\"Sign in\",\"columnKey\":\"col2\",\"columnWidth\":\"6\",\"seedComponents\":null}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "center"
+              },
+              "children": [
+                {
+                  "id": "e8103972-3196-508c-ae34-3678b3a649e3",
+                  "name": "col1",
+                  "title": "Welcome",
+                  "type": "region",
+                  "children": [
+                    {
+                      "definition": "c:healthConnectDoctorPortalWelcome",
+                      "id": "8f9e7d0b-2669-57a5-b019-21b093b86785",
+                      "type": "component",
+                      "attributes": {
+                        "dxpStyle": {}
+                      }
+                    }
+                  ]
+                },
+                {
+                  "id": "d784028d-c755-513a-ac19-f1c944287427",
+                  "name": "col2",
+                  "title": "Sign in",
+                  "type": "region",
+                  "children": [
+                    {
+                      "definition": "c:healthConnectPortalLogin",
+                      "id": "28466d34-9096-5d59-93da-c81f0c86d07f",
+                      "type": "component",
+                      "attributes": {
+                        "blueTheme": true,
+                        "dxpStyle": {},
+                        "forgotPasswordLabel": "Forgot password?",
+                        "forgotPasswordUrl": "/ForgotPassword",
+                        "loginButtonLabel": "Sign in",
+                        "showSelfRegister": false
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "94c921f6-2204-5034-97df-1a844bafc675",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region",
+          "children": [
+            {
+              "definition": "community_builder:seoAssistant",
+              "id": "f87e106e-1596-5287-b433-f68a44d79562",
+              "type": "component",
+              "attributes": {
+                "customHeadTags": "",
+                "description": "Secure sign-in for the HealthConnect Doctor Portal.",
+                "dxpStyle": {},
+                "pageTitle": "Sign in | HealthConnect Doctor Portal",
+                "recordId": "{!recordId}"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "login-main"
+  },
+  "urlName": "login"
+}

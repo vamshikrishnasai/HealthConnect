@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>HealthConnect Portal Registration Redirect</masterLabel>
+    <description
+  >Directs LWR signup requests to the existing secure HealthConnect registration page.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+    </targets>
+</LightningComponentBundle>

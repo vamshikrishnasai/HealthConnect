@@ -1,0 +1,5 @@
+{
+  "apiName": "My_Immunizations",
+  "type": "sfdc_cms__view",
+  "path": "views"
+}

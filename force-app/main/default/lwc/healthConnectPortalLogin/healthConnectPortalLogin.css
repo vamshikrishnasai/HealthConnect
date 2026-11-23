@@ -1,0 +1,217 @@
+:host {
+  display: block;
+  width: min(100%, 432px);
+  color: #16323a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-card {
+  width: 100%;
+  padding: 2.6rem;
+  border: 1px solid rgb(22 50 58 / 7%);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 24px 64px rgb(22 50 58 / 12%);
+}
+
+.login-heading {
+  margin-bottom: 1.4rem;
+}
+
+.login-heading h1 {
+  margin: 0;
+  color: #103b65;
+  font-size: clamp(1.45rem, 3vw, 1.8rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.login-heading > p:last-child {
+  margin: 0.45rem 0 0;
+  color: #61778b;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.login-eyebrow {
+  margin: 0 0 0.35rem;
+  color: #1474bd;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.login-card--blue .credential-input:focus {
+  border-color: #075ca8;
+  box-shadow: 0 0 0 3px rgb(7 92 168 / 16%);
+}
+
+.login-card--blue .credential-icon {
+  --slds-c-icon-color-foreground-default: #527493;
+}
+
+.login-card--blue .login-button {
+  border-color: #075ca8;
+  background: linear-gradient(105deg, #0b70bc, #063b73);
+  box-shadow: 0 8px 18px rgb(7 92 168 / 20%);
+}
+
+.login-card--blue .login-button:hover:not(:disabled) {
+  border-color: #063b73;
+  background: #063b73;
+  box-shadow: 0 10px 22px rgb(7 92 168 / 24%);
+}
+
+.login-card--blue .login-button:focus-visible,
+.login-card--blue .login-links a:focus-visible {
+  outline-color: rgb(7 92 168 / 28%);
+}
+
+.login-card--blue .login-links a {
+  color: #075ca8;
+}
+
+.login-card--blue .login-links a:hover {
+  color: #063b73;
+}
+
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+.credential-field {
+  position: relative;
+}
+
+.assistive-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.credential-input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 54px;
+  padding: 0 1rem 0 3.2rem;
+  border: 1px solid #cad9d7;
+  border-radius: 11px;
+  outline: none;
+  color: #16323a;
+  background: #f8fbfa;
+  font: inherit;
+  font-size: 1rem;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.credential-icon {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 1rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  transform: translateY(-50%);
+  fill: none;
+  color: #6b8386;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.credential-input::placeholder {
+  color: #71868a;
+  opacity: 1;
+}
+
+.credential-input:focus {
+  border-color: #087f82;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgb(8 127 130 / 16%);
+}
+
+.login-button {
+  min-height: 52px;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #087f82;
+  border-radius: 11px;
+  color: #ffffff;
+  background: #087f82;
+  box-shadow: 0 8px 18px rgb(8 127 130 / 20%);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.login-button:hover:not(:disabled) {
+  border-color: #06666a;
+  background: #06666a;
+  box-shadow: 0 10px 22px rgb(8 127 130 / 24%);
+  transform: translateY(-1px);
+}
+
+.login-button:focus-visible,
+.login-links a:focus-visible {
+  outline: 3px solid rgb(8 127 130 / 28%);
+  outline-offset: 3px;
+}
+
+.login-button:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}
+
+.login-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-top: 0.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e3eceb;
+  font-size: 0.84rem;
+}
+
+.login-links a {
+  color: #087f82;
+  text-decoration: none;
+}
+
+.login-links a:hover {
+  color: #06666a;
+  text-decoration: underline;
+}
+
+.error-message {
+  margin: 0;
+  color: #ba0517;
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 760px) {
+  .login-card {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .login-links {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

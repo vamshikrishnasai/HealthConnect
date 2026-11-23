@@ -1,0 +1,104 @@
+{
+  "type": "sfdc_cms__view",
+  "title": "Login",
+  "contentBody": {
+    "component": {
+      "children": [
+        {
+          "children": [
+            {
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "row",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"90c9ae0c-ba5a-4a9c-b443-d5f583e702e1\",\"columns\":[{\"UUID\":\"3c6b4e0d-cebe-492d-a6d0-eaee64cbce13\",\"columnName\":\"Welcome\",\"columnKey\":\"col1\",\"columnWidth\":\"6\",\"seedComponents\":null},{\"UUID\":\"8e6e86a2-2ad2-4394-8a26-8b048cab7950\",\"columnName\":\"Sign in\",\"columnKey\":\"col2\",\"columnWidth\":\"6\",\"seedComponents\":null}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "flex-start"
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "dxpStyle": {},
+                        "wideLayout": true
+                      },
+                      "definition": "c:healthConnectPortalWelcome",
+                      "id": "eff354ef-7410-429d-9212-1d5de92089e9",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "3c6b4e0d-cebe-492d-a6d0-eaee64cbce13",
+                  "name": "col1",
+                  "title": "Welcome",
+                  "type": "region"
+                },
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "dxpStyle": {},
+                        "forgotPasswordLabel": "Forgot password?",
+                        "forgotPasswordUrl": "/ForgotPassword",
+                        "loginButtonLabel": "Sign in",
+                        "selfRegisterLabel": "Not a member? Sign up",
+                        "selfRegisterUrl": "/SelfRegister"
+                      },
+                      "definition": "c:healthConnectPortalLogin",
+                      "id": "ca0e8f51-f0fc-49c9-bde0-9c8b0740be68",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "8e6e86a2-2ad2-4394-8a26-8b048cab7950",
+                  "name": "col2",
+                  "title": "Sign in",
+                  "type": "region"
+                }
+              ],
+              "definition": "community_layout:section",
+              "id": "90c9ae0c-ba5a-4a9c-b443-d5f583e702e1",
+              "type": "component"
+            }
+          ],
+          "id": "d74d1e82-81d2-4659-a982-abb2d9477da8",
+          "name": "content",
+          "title": "Content",
+          "type": "region"
+        },
+        {
+          "children": [
+            {
+              "attributes": {
+                "customHeadTags": "",
+                "description": "Securely sign in to your HealthConnect patient portal.",
+                "dxpStyle": {},
+                "pageTitle": "Sign in | HealthConnect",
+                "recordId": "{!recordId}"
+              },
+              "definition": "community_builder:seoAssistant",
+              "id": "5b816081-6243-496d-9b0d-ddb9fa62b47d",
+              "type": "component"
+            }
+          ],
+          "id": "20e9636b-5162-447b-bc7c-a8170ba568f0",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region"
+        }
+      ],
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "6e52e8a1-d591-47a6-9612-6f3e4b8a7d3e",
+      "type": "component"
+    },
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "login-main"
+  },
+  "urlName": "login"
+}

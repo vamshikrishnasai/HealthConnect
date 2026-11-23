@@ -1,0 +1,107 @@
+{
+  "type": "sfdc_cms__view",
+  "title": "Register",
+  "contentBody": {
+    "component": {
+      "children": [
+        {
+          "children": [
+            {
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "row",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"3da4f07d-2482-4974-b72e-4beafe03c918\",\"columns\":[{\"UUID\":\"9bee4c83-bcb0-4a26-b74a-dd0bbc1ee313\",\"columnName\":\"Welcome\",\"columnKey\":\"col1\",\"columnWidth\":\"6\",\"seedComponents\":null},{\"UUID\":\"c4c8e15a-8a2e-4cbe-9f4d-c29bbbd0f6dd\",\"columnName\":\"Create account\",\"columnKey\":\"col2\",\"columnWidth\":\"6\",\"seedComponents\":null}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "flex-start"
+              },
+              "children": [
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "dxpStyle": {},
+                        "wideLayout": true
+                      },
+                      "definition": "c:healthConnectPortalWelcome",
+                      "id": "b2cc4dc5-86f6-4d71-bc17-190609e43914",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "9bee4c83-bcb0-4a26-b74a-dd0bbc1ee313",
+                  "name": "col1",
+                  "title": "Welcome",
+                  "type": "region"
+                },
+                {
+                  "children": [
+                    {
+                      "attributes": {
+                        "cancelLinkLabel": "Already have an account?",
+                        "confirmPasswordLabel": "Confirm Password",
+                        "emailLabel": "Email",
+                        "firstnameLabel": "First Name",
+                        "includePasswordField": true,
+                        "lastnameLabel": "Last Name",
+                        "passwordLabel": "Create Password",
+                        "regConfirmUrl": "./CheckPasswordResetEmail",
+                        "submitButtonLabel": "Sign Up"
+                      },
+                      "definition": "community_login:selfRegister",
+                      "id": "1b1b8265-6a84-4bb0-9231-67d4d7eb3e0b",
+                      "type": "component"
+                    }
+                  ],
+                  "id": "c4c8e15a-8a2e-4cbe-9f4d-c29bbbd0f6dd",
+                  "name": "col2",
+                  "title": "Create account",
+                  "type": "region"
+                }
+              ],
+              "definition": "community_layout:section",
+              "id": "3da4f07d-2482-4974-b72e-4beafe03c918",
+              "type": "component"
+            }
+          ],
+          "id": "0e714513-1e0c-4cdf-8ec5-d6b479c0e41d",
+          "name": "content",
+          "title": "Content",
+          "type": "region"
+        },
+        {
+          "children": [
+            {
+              "attributes": {
+                "customHeadTags": "",
+                "description": "Create secure access to your HealthConnect patient portal.",
+                "dxpStyle": {},
+                "pageTitle": "Create account | HealthConnect",
+                "recordId": "{!recordId}"
+              },
+              "definition": "community_builder:seoAssistant",
+              "id": "22ebc6f8-a0e9-4501-bdd1-0fa866e6b6c0",
+              "type": "component"
+            }
+          ],
+          "id": "7d3a0be2-c8b9-434f-9976-6a4a8ed10afe",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region"
+        }
+      ],
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "115a2085-c72d-4aa1-adca-0ecba4456804",
+      "type": "component"
+    },
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "self-register"
+  },
+  "urlName": "register"
+}

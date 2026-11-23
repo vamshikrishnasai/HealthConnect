@@ -1,0 +1,66 @@
+<template>
+  <article
+    class="appointment-detail"
+    aria-label="Selected appointment details"
+    aria-labelledby="appointment-detail-heading"
+  >
+    <div class="detail-heading">
+      <div>
+        <p class="eyebrow">APPOINTMENT DETAILS</p>
+        <h3 id="appointment-detail-heading">{appointment.Name}</h3>
+      </div>
+      <button class="text-action" type="button" onclick={handleClose}>
+        Close
+      </button>
+    </div>
+    <dl class="medical-details">
+      <div class="medical-field">
+        <dt>Date and time</dt>
+        <dd class="appointment-date">
+          <template lwc:if={appointment.appointmentDate}
+            ><lightning-formatted-date-time
+              value={appointment.appointmentDate}
+              year="numeric"
+              month="long"
+              day="2-digit"
+              time-zone="UTC"
+            ></lightning-formatted-date-time></template
+          ><template lwc:else>Date not recorded</template
+          ><template lwc:if={appointment.appointmentTime}>
+            · {appointment.appointmentTime}</template
+          >
+        </dd>
+        <dd>
+          <span class={appointment.statusBadgeClass}
+            >{appointment.appointmentStatus}</span
+          >
+        </dd>
+      </div>
+      <template lwc:if={appointment.hasAssignedDoctor}
+        ><div class="medical-field">
+          <dt>Assigned doctor</dt>
+          <dd>
+            <template lwc:if={appointment.assignedDoctorName}
+              >{appointment.assignedDoctorName}</template
+            ><template lwc:else
+              >An assigned doctor is on file; the name is not available in the
+              patient portal.</template
+            >
+          </dd>
+        </div></template
+      >
+      <template lwc:if={appointment.relatedCaseName}
+        ><div class="medical-field">
+          <dt>Related health case</dt>
+          <dd>{appointment.relatedCaseName}</dd>
+        </div></template
+      >
+      <template lwc:if={appointment.doctorRecommendation}
+        ><div class="medical-field">
+          <dt>Doctor recommendation</dt>
+          <dd>{appointment.doctorRecommendation}</dd>
+        </div></template
+      >
+    </dl>
+  </article>
+</template>

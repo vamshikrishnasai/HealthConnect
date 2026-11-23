@@ -1,0 +1,1858 @@
+<template>
+  <main class="portal-shell">
+    <header class="brand-header">
+      <a class="brand-home" href={homeUrl} aria-label="HealthConnect home">
+        <img class="brand-mark" src={symbolUrl} alt="" />
+      </a>
+      <div class="brand-copy">
+        <p class="brand-name">HealthConnect</p>
+        <p class="brand-tagline">Your care, connected</p>
+      </div>
+      <template lwc:if={isGuestUser}>
+        <div class="secure-label">
+          <lightning-icon
+            icon-name="utility:lock"
+            size="xx-small"
+            alternative-text=""
+          ></lightning-icon>
+          <span>Secure patient portal</span>
+        </div>
+      </template>
+      <template lwc:elseif={portalResolved}>
+        <div class="header-actions">
+          <div class="notification-wrap">
+            <button
+              class="utility-button notification-button"
+              type="button"
+              aria-label={notificationButtonLabel}
+              aria-expanded={showNotifications}
+              aria-controls="care-notification-panel"
+              onclick={toggleNotifications}
+            >
+              <lightning-icon
+                icon-name="utility:notification"
+                size="small"
+                alternative-text=""
+              ></lightning-icon>
+              <template lwc:if={hasNotifications}>
+                <span class="notification-count">{notificationCount}</span>
+              </template>
+            </button>
+            <template lwc:if={showNotifications}>
+              <section
+                id="care-notification-panel"
+                class="notification-panel notification-panel-open"
+                aria-label="Care notifications"
+              >
+                <div class="notification-heading">
+                  <div>
+                    <p class="eyebrow">STAY UP TO DATE</p>
+                    <h2>Care reminders</h2>
+                  </div>
+                  <button
+                    class="notification-close"
+                    type="button"
+                    aria-label="Close notifications"
+                    onclick={closeNotifications}
+                  >
+                    <lightning-icon
+                      icon-name="utility:close"
+                      size="x-small"
+                      alternative-text=""
+                    ></lightning-icon>
+                  </button>
+                </div>
+                <template lwc:if={hasNotificationItems}>
+                  <ul class="notification-list">
+                    <template for:each={notificationItems} for:item="reminder">
+                      <li class="notification-item" key={reminder.Id}>
+                        <span class="notification-marker">
+                          <lightning-icon
+                            icon-name="utility:clock"
+                            size="x-small"
+                            alternative-text=""
+                          ></lightning-icon>
+                        </span>
+                        <div>
+                          <p class="notification-title">
+                            {reminder.Reminder_Type__c}
+                          </p>
+                          <p class="notification-meta">
+                            <strong>Due:</strong>
+                            &nbsp;
+                            <lightning-formatted-date-time
+                              value={reminder.Due_Date__c}
+                              year="numeric"
+                              month="short"
+                              day="2-digit"
+                              time-zone="UTC"
+                            ></lightning-formatted-date-time>
+                          </p>
+                        </div>
+                      </li>
+                    </template>
+                  </ul>
+                  <a
+                    class="notification-link"
+                    href={homeUrl}
+                    onclick={closeNotifications}
+                    >View care reminders</a
+                  >
+                </template>
+                <template lwc:else>
+                  <div class="notification-empty">
+                    <lightning-icon
+                      icon-name="utility:check"
+                      size="small"
+                      alternative-text=""
+                    ></lightning-icon>
+                    <p>You’re all caught up. No pending care reminders.</p>
+                  </div>
+                </template>
+              </section>
+            </template>
+          </div>
+          <template lwc:if={canEditPatientProfile}>
+            <button
+              class="account-chip account-chip-button"
+              type="button"
+              title="View your patient profile"
+              aria-label={profileButtonLabel}
+              aria-haspopup="dialog"
+              aria-controls="patient-profile-dialog"
+              aria-expanded={showPatientProfile}
+              onclick={openPatientProfile}
+            >
+              <span class="account-avatar" aria-hidden="true">
+                <lightning-icon
+                  icon-name="utility:user"
+                  size="x-small"
+                  alternative-text=""
+                ></lightning-icon>
+              </span>
+              <span class="account-name">{accountLabel}</span>
+            </button>
+          </template>
+          <template lwc:else>
+            <div class="account-chip" title={accountLabel}>
+              <span class="account-avatar" aria-hidden="true">
+                <lightning-icon
+                  icon-name="utility:user"
+                  size="x-small"
+                  alternative-text=""
+                ></lightning-icon>
+              </span>
+              <span class="account-name">{accountLabel}</span>
+            </div>
+          </template>
+          <button class="logout-button" type="button" onclick={handleLogout}>
+            <lightning-icon
+              icon-name="utility:logout"
+              size="x-small"
+              alternative-text=""
+            ></lightning-icon>
+            <span>Log out</span>
+          </button>
+        </div>
+      </template>
+    </header>
+
+    <template lwc:if={showPatientProfile}>
+      <div class="profile-dialog-backdrop">
+        <section
+          id="patient-profile-dialog"
+          class="patient-profile-dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="patient-profile-heading"
+          tabindex="-1"
+          onkeydown={handlePatientProfileKeydown}
+        >
+          <div class="profile-dialog-heading">
+            <div>
+              <p class="eyebrow">YOUR ACCOUNT</p>
+              <h2 id="patient-profile-heading">Patient profile</h2>
+              <p class="section-description">
+                Review and update your personal details.
+              </p>
+            </div>
+            <button
+              class="notification-close profile-dialog-close"
+              type="button"
+              aria-label="Close patient profile"
+              disabled={isSavingPatientProfile}
+              onclick={closePatientProfile}
+            >
+              <lightning-icon
+                icon-name="utility:close"
+                size="x-small"
+                alternative-text=""
+              ></lightning-icon>
+            </button>
+          </div>
+          <template lwc:if={profileSuccessMessage}>
+            <p class="profile-message profile-success" role="status">
+              {profileSuccessMessage}
+            </p>
+          </template>
+          <template lwc:if={profileErrorMessage}>
+            <p class="profile-message profile-error" role="alert">
+              {profileErrorMessage}
+            </p>
+          </template>
+          <template lwc:if={isEditingPatientProfile}>
+            <div class="profile-edit-grid">
+              <lightning-input
+                class="patient-profile-edit-field"
+                data-field="Name"
+                label="Full name"
+                value={patientProfileDraft.Name}
+                maxlength="80"
+                required
+                onchange={handlePatientProfileFieldChange}
+              ></lightning-input>
+              <lightning-input
+                class="patient-profile-edit-field"
+                data-field="Date_of_Birth__c"
+                label="Date of birth"
+                type="date"
+                value={patientProfileDraft.Date_of_Birth__c}
+                onchange={handlePatientProfileFieldChange}
+              ></lightning-input>
+              <lightning-input
+                class="patient-profile-edit-field"
+                data-field="Phone_Number__c"
+                label="Phone number"
+                type="tel"
+                value={patientProfileDraft.Phone_Number__c}
+                onchange={handlePatientProfileFieldChange}
+              ></lightning-input>
+              <lightning-combobox
+                class="patient-profile-edit-field"
+                data-field="Gender__c"
+                label="Gender"
+                value={patientProfileDraft.Gender__c}
+                options={genderOptions}
+                onchange={handlePatientProfileFieldChange}
+              ></lightning-combobox>
+              <lightning-combobox
+                class="patient-profile-edit-field"
+                data-field="Blood_Group__c"
+                label="Blood group"
+                value={patientProfileDraft.Blood_Group__c}
+                options={bloodGroupOptions}
+                onchange={handlePatientProfileFieldChange}
+              ></lightning-combobox>
+              <lightning-textarea
+                class="patient-profile-edit-field profile-address-field"
+                data-field="Address__c"
+                label="Address"
+                value={patientProfileDraft.Address__c}
+                maxlength="255"
+                onchange={handlePatientProfileFieldChange}
+              ></lightning-textarea>
+              <lightning-input
+                class="patient-profile-edit-field"
+                data-field="State__c"
+                label="State"
+                value={patientProfileDraft.State__c}
+                maxlength="100"
+                onchange={handlePatientProfileFieldChange}
+              ></lightning-input>
+              <lightning-input
+                class="patient-profile-edit-field"
+                data-field="District__c"
+                label="District"
+                value={patientProfileDraft.District__c}
+                maxlength="100"
+                onchange={handlePatientProfileFieldChange}
+              ></lightning-input>
+              <lightning-input
+                class="patient-profile-edit-field"
+                data-field="Village__c"
+                label="Village"
+                value={patientProfileDraft.Village__c}
+                maxlength="100"
+                onchange={handlePatientProfileFieldChange}
+              ></lightning-input>
+            </div>
+            <div class="profile-dialog-actions">
+              <button
+                class="profile-secondary-action"
+                type="button"
+                disabled={isSavingPatientProfile}
+                onclick={cancelEditingPatientProfile}
+              >
+                Cancel
+              </button>
+              <button
+                class="primary-action profile-primary-action"
+                type="button"
+                disabled={isSavingPatientProfile}
+                onclick={savePatientProfile}
+              >
+                <template lwc:if={isSavingPatientProfile}> Saving… </template>
+                <template lwc:else>Save changes</template>
+              </button>
+            </div>
+          </template>
+          <template lwc:else>
+            <dl class="profile-detail-grid">
+              <div class="profile-item">
+                <dt>Full name</dt>
+                <dd>{patient.Name}</dd>
+              </div>
+              <div class="profile-item">
+                <dt>Date of birth</dt>
+                <dd>
+                  <template lwc:if={patient.Date_of_Birth__c}>
+                    <lightning-formatted-date-time
+                      value={patient.Date_of_Birth__c}
+                      year="numeric"
+                      month="long"
+                      day="2-digit"
+                      time-zone="UTC"
+                    ></lightning-formatted-date-time>
+                  </template>
+                  <template lwc:else>Not provided</template>
+                </dd>
+              </div>
+              <div class="profile-item">
+                <dt>Phone number</dt>
+                <dd>
+                  <template lwc:if={patient.Phone_Number__c}>
+                    {patient.Phone_Number__c}
+                  </template>
+                  <template lwc:else>Not provided</template>
+                </dd>
+              </div>
+              <div class="profile-item">
+                <dt>Gender</dt>
+                <dd>
+                  <template lwc:if={patient.Gender__c}>
+                    {patient.Gender__c}
+                  </template>
+                  <template lwc:else>Not provided</template>
+                </dd>
+              </div>
+              <div class="profile-item">
+                <dt>Blood group</dt>
+                <dd>
+                  <template lwc:if={patient.Blood_Group__c}>
+                    {patient.Blood_Group__c}
+                  </template>
+                  <template lwc:else>Not provided</template>
+                </dd>
+              </div>
+              <div class="profile-item profile-detail-address">
+                <dt>Address</dt>
+                <dd>
+                  <template lwc:if={patient.Address__c}>
+                    {patient.Address__c}
+                  </template>
+                  <template lwc:else>Not provided</template>
+                </dd>
+              </div>
+              <div class="profile-item">
+                <dt>State</dt>
+                <dd>
+                  <template lwc:if={patient.State__c}>
+                    {patient.State__c}
+                  </template>
+                  <template lwc:else>Not provided</template>
+                </dd>
+              </div>
+              <div class="profile-item">
+                <dt>District</dt>
+                <dd>
+                  <template lwc:if={patient.District__c}>
+                    {patient.District__c}
+                  </template>
+                  <template lwc:else>Not provided</template>
+                </dd>
+              </div>
+              <div class="profile-item">
+                <dt>Village</dt>
+                <dd>
+                  <template lwc:if={patient.Village__c}>
+                    {patient.Village__c}
+                  </template>
+                  <template lwc:else>Not provided</template>
+                </dd>
+              </div>
+            </dl>
+            <div class="profile-dialog-actions">
+              <button
+                class="primary-action profile-primary-action"
+                type="button"
+                onclick={startEditingPatientProfile}
+              >
+                Edit profile
+              </button>
+            </div>
+          </template>
+        </section>
+      </div>
+    </template>
+
+    <section class="portal-content">
+      <template lwc:if={isGuestUser}>
+        <section class="welcome-panel guest-panel">
+          <div class="guest-brand">
+            <img
+              src={logoUrl}
+              alt="HealthConnect — Better Care. Healthier Tomorrows."
+            />
+          </div>
+          <p class="eyebrow">YOUR HEALTH, IN ONE PLACE</p>
+          <h1>Care that keeps you connected.</h1>
+          <p class="welcome-description">
+            Sign in to securely view your health information, upcoming
+            appointments, immunization history and care reminders.
+          </p>
+          <a class="primary-action" href={loginUrl}>
+            Sign in to your account
+            <lightning-icon
+              icon-name="utility:arrowright"
+              size="x-small"
+              alternative-text=""
+            ></lightning-icon>
+          </a>
+          <p class="help-note">
+            Need access? Contact your community health worker for assistance.
+          </p>
+        </section>
+      </template>
+      <template lwc:elseif={isLoading}>
+        <section class="state-panel" role="status">
+          <lightning-spinner
+            alternative-text="Loading your health information"
+          ></lightning-spinner>
+          <p>Loading your personal health dashboard…</p>
+        </section>
+      </template>
+      <template lwc:elseif={errorMessage}>
+        <section class="state-panel error-panel" role="alert">
+          <div class="state-icon error-icon">
+            <lightning-icon
+              icon-name="utility:warning"
+              size="small"
+              alternative-text=""
+            ></lightning-icon>
+          </div>
+          <h1>We couldn’t load your dashboard</h1>
+          <p>{errorMessage}</p>
+          <lightning-button
+            label="Try again"
+            variant="brand"
+            onclick={handleRetry}
+          ></lightning-button>
+          <p class="help-note">
+            If this continues, contact your community health worker.
+          </p>
+        </section>
+      </template>
+      <template lwc:elseif={isDoctorPortalUser}>
+        <c-health-connect-doctor-dashboard></c-health-connect-doctor-dashboard>
+      </template>
+      <template lwc:elseif={isPatientSetupPending}>
+        <section class="state-panel" role="status">
+          <div class="state-icon">
+            <lightning-icon
+              icon-name="utility:clock"
+              size="small"
+              alternative-text=""
+            ></lightning-icon>
+          </div>
+          <h1>Your patient profile is being prepared</h1>
+          <p>
+            We couldn’t safely match this account to an existing patient record
+            using email alone. A community health worker must verify and link
+            your profile before clinical details or appointment booking are
+            available.
+          </p>
+          <p class="help-note">
+            Contact your community health worker for help.
+          </p>
+        </section>
+      </template>
+      <template lwc:elseif={patient}>
+        <nav class="portal-nav" aria-label="Patient portal">
+          <template for:each={navItems} for:item="item">
+            <a
+              key={item.page}
+              class={item.className}
+              href={item.href}
+              aria-current={item.ariaCurrent}
+            >
+              <lightning-icon
+                icon-name={item.icon}
+                size="x-small"
+                alternative-text=""
+              ></lightning-icon>
+              <span>{item.label}</span>
+            </a>
+          </template>
+        </nav>
+
+        <template lwc:if={isHomePage}>
+          <section class="welcome-panel patient-welcome">
+            <div class="welcome-copy">
+              <p class="eyebrow">YOUR HEALTH, IN ONE PLACE</p>
+              <h1>Welcome, {patient.Name}</h1>
+              <p class="welcome-description">
+                Welcome to your HealthConnect portal. Review your care,
+                appointments, and health information in one secure place.
+              </p>
+            </div>
+            <div class="welcome-art" aria-hidden="true">
+              <lightning-icon
+                icon-name="utility:heart"
+                size="large"
+                alternative-text=""
+              ></lightning-icon>
+            </div>
+          </section>
+
+          <section class="overview-grid" aria-label="Care overview">
+            <a
+              class="overview-card overview-link"
+              href={myHealthUrl}
+              aria-label="View active health cases in My Health"
+            >
+              <div class="overview-icon case-icon">
+                <lightning-icon
+                  icon-name="utility:case"
+                  size="small"
+                  alternative-text=""
+                ></lightning-icon>
+              </div>
+              <div>
+                <p class="overview-label">Active health cases</p>
+                <p class="overview-value">{activeCaseCount}</p>
+                <p class="overview-detail">Not marked closed</p>
+                <span class="overview-link-label">View health history</span>
+              </div>
+            </a>
+            <a
+              class="overview-card overview-link"
+              href={appointmentsUrl}
+              aria-label="View upcoming appointments"
+            >
+              <div class="overview-icon appointment-icon">
+                <lightning-icon
+                  icon-name="utility:event"
+                  size="small"
+                  alternative-text=""
+                ></lightning-icon>
+              </div>
+              <div>
+                <p class="overview-label">Upcoming appointments</p>
+                <p class="overview-value">{upcomingAppointmentCount}</p>
+                <p class="overview-detail">Scheduled or rescheduled</p>
+                <span class="overview-link-label">View appointments</span>
+              </div>
+            </a>
+            <a
+              class="overview-card overview-link"
+              href={appointmentsUrl}
+              aria-label="Review open case follow-ups"
+            >
+              <div class="overview-icon follow-up-icon">
+                <lightning-icon
+                  icon-name="utility:clock"
+                  size="small"
+                  alternative-text=""
+                ></lightning-icon>
+              </div>
+              <div>
+                <p class="overview-label">Open case follow-ups</p>
+                <p class="overview-value">{pendingFollowUpCount}</p>
+                <p class="overview-detail">Dates recorded by your care team</p>
+                <span class="overview-link-label">Review follow-ups</span>
+              </div>
+            </a>
+            <a
+              class="overview-card overview-link"
+              href={immunizationsUrl}
+              aria-label="View immunization records"
+            >
+              <div class="overview-icon immunization-icon">
+                <lightning-icon
+                  icon-name="utility:shield"
+                  size="small"
+                  alternative-text=""
+                ></lightning-icon>
+              </div>
+              <div>
+                <p class="overview-label">Immunization records</p>
+                <p class="overview-value">{immunizationCount}</p>
+                <p class="overview-detail">
+                  {upcomingImmunizationCount} with a future dose date
+                </p>
+                <span class="overview-link-label">View immunizations</span>
+              </div>
+            </a>
+          </section>
+
+          <section class="home-highlights" aria-label="Care highlights">
+            <article class="patient-card home-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">YOUR CARE PLAN</p>
+                  <h2>Upcoming appointments</h2>
+                </div>
+                <a class="text-action" href={appointmentsUrl}> View all </a>
+              </div>
+              <template lwc:if={hasUpcomingAppointments}>
+                <ul class="record-list">
+                  <template
+                    for:each={homeUpcomingAppointmentRows}
+                    for:item="item"
+                  >
+                    <li key={item.Id} class="record-row">
+                      <div class="record-copy">
+                        <p class="record-title">{item.Name}</p>
+                        <p class="record-meta appointment-date">
+                          <lightning-formatted-date-time
+                            value={item.appointmentDate}
+                            year="numeric"
+                            month="short"
+                            day="2-digit"
+                            time-zone="UTC"
+                          ></lightning-formatted-date-time>
+                          <template lwc:if={item.appointmentTime}>
+                            · {item.appointmentTime}
+                          </template>
+                        </p>
+                        <template lwc:if={item.assignedDoctorName}>
+                          <p class="record-meta">
+                            <strong>Assigned doctor:</strong>
+                            &nbsp;{item.assignedDoctorName}
+                          </p>
+                        </template>
+                      </div>
+                      <span class={item.statusBadgeClass}
+                        >{item.appointmentStatus}</span
+                      >
+                    </li>
+                  </template>
+                </ul>
+              </template>
+              <template lwc:else>
+                <div class="empty-state">
+                  <p>No upcoming appointments.</p>
+                  <span>Scheduled visits will appear here.</span>
+                </div>
+              </template>
+            </article>
+            <article class="patient-card home-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">PREVENTIVE CARE</p>
+                  <h2>Upcoming immunizations</h2>
+                </div>
+                <a class="text-action" href={immunizationsUrl}> View all </a>
+              </div>
+              <template lwc:if={hasUpcomingImmunizations}>
+                <ul class="record-list">
+                  <template for:each={upcomingImmunizationRows} for:item="item">
+                    <li key={item.Id} class="record-row">
+                      <div class="record-copy">
+                        <p class="record-title">{item.Vaccine_Name__c}</p>
+                        <p class="record-meta">
+                          <strong>Next due:</strong>
+                          &nbsp;
+                          <lightning-formatted-date-time
+                            value={item.Next_Due_Date__c}
+                            year="numeric"
+                            month="short"
+                            day="2-digit"
+                            time-zone="UTC"
+                          ></lightning-formatted-date-time>
+                        </p>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+                <template lwc:if={hasMoreUpcomingImmunizations}>
+                  <p class="list-limit-note">
+                    More upcoming dose dates are available in your immunization
+                    records.
+                  </p>
+                </template>
+              </template>
+              <template lwc:else>
+                <div class="empty-state">
+                  <p>No upcoming immunization dates are recorded.</p>
+                  <span
+                    >Check with your care team if you have questions about your
+                    schedule.</span
+                  >
+                </div>
+              </template>
+            </article>
+
+            <article class="patient-card home-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">CARE TEAM GUIDANCE</p>
+                  <h2>Recent recommendations</h2>
+                </div>
+                <a class="text-action" href={recommendationsUrl}> View all </a>
+              </div>
+              <template lwc:if={hasRecommendations}>
+                <ul class="record-list">
+                  <template for:each={recentRecommendationRows} for:item="item">
+                    <li key={item.Id} class="record-row">
+                      <div class="record-copy">
+                        <p class="record-title">{item.Name}</p>
+                        <p class="home-recommendation-preview">
+                          {item.doctorRecommendation}
+                        </p>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+                <template lwc:if={hasMoreCases}>
+                  <p class="list-limit-note">
+                    Recommendations are shown for the 50 most recently created
+                    health cases.
+                  </p>
+                </template>
+              </template>
+              <template lwc:else>
+                <div class="empty-state">
+                  <p>No recommendations are recorded.</p>
+                  <span
+                    >Instructions shared by your care team will appear
+                    here.</span
+                  >
+                </div>
+              </template>
+            </article>
+
+            <article class="patient-card home-card">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">YOUR HEALTH RECORD</p>
+                  <h2>Active cases</h2>
+                </div>
+                <a class="text-action" href={myHealthUrl}> View all </a>
+              </div>
+              <template lwc:if={hasActiveCases}>
+                <ul class="record-list">
+                  <template for:each={activeCaseRows} for:item="item">
+                    <li key={item.Id} class="record-row">
+                      <div class="record-copy">
+                        <p class="record-title">{item.Name}</p>
+                        <template lwc:if={item.caseStatus}>
+                          <span class={item.statusBadgeClass}
+                            >{item.caseStatus}</span
+                          >
+                        </template>
+                      </div>
+                    </li>
+                  </template>
+                </ul>
+              </template>
+              <template lwc:else>
+                <div class="empty-state">
+                  <p>No active cases are recorded.</p>
+                  <span>Your care team will share updates here.</span>
+                </div>
+              </template>
+            </article>
+          </section>
+        </template>
+
+        <template lwc:if={isMyHealthPage}>
+          <section class="page-heading">
+            <p class="eyebrow">MY HEALTH</p>
+            <h1>Your health profile and history</h1>
+            <p>
+              Review the patient information and health cases shared with your
+              portal account.
+            </p>
+          </section>
+          <section class="patient-card" aria-labelledby="patient-heading">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">PATIENT PROFILE</p>
+                <h2 id="patient-heading">{patient.Name}</h2>
+              </div>
+              <template lwc:if={patient.Patient_Status__c}>
+                <span class="status-badge">
+                  <span class="status-dot"></span>
+                  {patient.Patient_Status__c}
+                </span>
+              </template>
+            </div>
+            <dl class="profile-grid">
+              <template lwc:if={patient.Date_of_Birth__c}>
+                <div class="profile-item">
+                  <dt>Date of birth</dt>
+                  <dd>
+                    <lightning-formatted-date-time
+                      value={patient.Date_of_Birth__c}
+                      year="numeric"
+                      month="long"
+                      day="2-digit"
+                      time-zone="UTC"
+                    ></lightning-formatted-date-time>
+                  </dd>
+                </div>
+              </template>
+              <template lwc:if={patient.Blood_Group__c}>
+                <div class="profile-item">
+                  <dt>Blood group</dt>
+                  <dd>{patient.Blood_Group__c}</dd>
+                </div>
+              </template>
+              <template lwc:if={patient.Phone_Number__c}>
+                <div class="profile-item">
+                  <dt>Phone</dt>
+                  <dd>{patient.Phone_Number__c}</dd>
+                </div>
+              </template>
+            </dl>
+          </section>
+          <section
+            class="patient-card detail-section case-history-card"
+            aria-labelledby="cases-heading"
+          >
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">YOUR HEALTH RECORD</p>
+                <h2 id="cases-heading">Health history</h2>
+              </div>
+            </div>
+            <template lwc:if={hasHealthCases}>
+              <ul class="record-list">
+                <template for:each={caseRows} for:item="item">
+                  <li key={item.Id} class="record-row selectable-row">
+                    <button
+                      class="record-select case-record-select"
+                      type="button"
+                      data-case-id={item.Id}
+                      aria-expanded={item.isSelected}
+                      aria-controls="case-details"
+                      onclick={handleCaseSelect}
+                    >
+                      <span class="record-copy case-record-copy">
+                        <span class="record-title case-record-title"
+                          >{item.Name}</span
+                        >
+                        <span class="record-meta case-record-meta">
+                          <template lwc:if={item.diagnosis}>
+                            <span class="case-meta-item case-diagnosis">
+                              <span class="case-meta-label">Diagnosis</span>
+                              <span>{item.diagnosis}</span>
+                            </span>
+                          </template>
+                          <template lwc:else
+                            ><span class="case-meta-item">Health case</span>
+                          </template>
+                          <template lwc:if={item.CreatedDate}>
+                            <span class="case-meta-item case-opened">
+                              <span class="case-meta-label">Opened</span>
+                              <lightning-formatted-date-time
+                                value={item.CreatedDate}
+                                year="numeric"
+                                month="short"
+                                day="2-digit"
+                                time-zone="UTC"
+                              ></lightning-formatted-date-time>
+                            </span>
+                          </template>
+                        </span>
+                      </span>
+                      <template lwc:if={item.caseStatus}>
+                        <span class={item.statusBadgeClass}
+                          >{item.caseStatus}</span
+                        >
+                      </template>
+                    </button>
+                  </li>
+                </template>
+              </ul>
+              <template lwc:if={hasMoreCases}
+                ><p class="list-limit-note">
+                  Showing the 50 most recently created cases.
+                </p></template
+              >
+              <template lwc:if={selectedCase}>
+                <article
+                  id="case-details"
+                  class="detail-panel"
+                  aria-labelledby="case-detail-heading"
+                >
+                  <div class="section-heading">
+                    <div>
+                      <p class="eyebrow">CASE DETAILS</p>
+                      <h3 id="case-detail-heading">{selectedCase.Name}</h3>
+                    </div>
+                    <button
+                      class="text-action"
+                      type="button"
+                      onclick={clearCaseSelection}
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <dl class="medical-details case-medical-details">
+                    <template lwc:if={selectedCase.caseStatus}>
+                      <div class="medical-field case-medical-field">
+                        <dt>Case status</dt>
+                        <dd>
+                          <span class={selectedCase.statusBadgeClass}
+                            >{selectedCase.caseStatus}</span
+                          >
+                        </dd>
+                      </div>
+                    </template>
+                    <template lwc:if={selectedCase.CreatedDate}>
+                      <div class="medical-field case-medical-field">
+                        <dt>Opened</dt>
+                        <dd>
+                          <lightning-formatted-date-time
+                            value={selectedCase.CreatedDate}
+                            year="numeric"
+                            month="short"
+                            day="2-digit"
+                            time-zone="UTC"
+                          ></lightning-formatted-date-time>
+                        </dd>
+                      </div>
+                    </template>
+                    <template lwc:if={selectedCase.followUpDate}>
+                      <div class="medical-field case-medical-field">
+                        <dt>Follow-up date</dt>
+                        <dd>
+                          <lightning-formatted-date-time
+                            value={selectedCase.followUpDate}
+                            year="numeric"
+                            month="short"
+                            day="2-digit"
+                            time-zone="UTC"
+                          ></lightning-formatted-date-time>
+                        </dd>
+                      </div>
+                    </template>
+                    <template lwc:if={selectedCase.hasAssignedDoctor}
+                      ><div class="medical-field case-medical-field">
+                        <dt>Assigned doctor</dt>
+                        <dd>
+                          <template lwc:if={selectedCase.assignedDoctorName}
+                            >{selectedCase.assignedDoctorName}</template
+                          ><template lwc:else
+                            >An assigned doctor is on file; the name is not
+                            available in the patient portal.</template
+                          >
+                        </dd>
+                      </div></template
+                    >
+                    <template lwc:if={selectedCase.symptoms}>
+                      <div class="medical-field case-medical-field">
+                        <dt>Symptoms</dt>
+                        <dd>{selectedCase.symptoms}</dd>
+                      </div>
+                    </template>
+                    <template lwc:if={selectedCase.diagnosis}>
+                      <div class="medical-field case-medical-field">
+                        <dt>Diagnosis</dt>
+                        <dd>{selectedCase.diagnosis}</dd>
+                      </div>
+                    </template>
+                    <template lwc:if={selectedCase.doctorRecommendation}>
+                      <div class="medical-field case-medical-field">
+                        <dt>Doctor’s recommendations</dt>
+                        <dd class="case-recommendation-text">
+                          {selectedCase.doctorRecommendation}
+                        </dd>
+                      </div>
+                    </template>
+                  </dl>
+                </article>
+              </template>
+            </template>
+            <template lwc:else>
+              <div class="empty-state">
+                <p>No health cases recorded.</p>
+                <span
+                  >Health records shared with you by your care team will appear
+                  here.</span
+                >
+              </div>
+            </template>
+          </section>
+        </template>
+
+        <template lwc:if={isImmunizationsPage}>
+          <section class="page-heading">
+            <p class="eyebrow">PREVENTIVE CARE</p>
+            <h1>My Immunizations</h1>
+            <p>
+              Review recorded doses and any next-dose dates shared by your care
+              team.
+            </p>
+          </section>
+          <section
+            class="patient-card immunization-section"
+            aria-labelledby="immunizations-heading"
+          >
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">IMMUNIZATION RECORDS</p>
+                <h2 id="immunizations-heading">Recorded doses</h2>
+              </div>
+              <span class="record-status status-neutral">
+                {immunizationCount} records
+              </span>
+            </div>
+            <template lwc:if={hasImmunizations}>
+              <ul class="record-list immunization-list">
+                <template for:each={immunizationRows} for:item="item">
+                  <li key={item.Id} class="record-row selectable-row">
+                    <button
+                      class="record-select immunization-select"
+                      type="button"
+                      data-immunization-id={item.Id}
+                      aria-expanded={item.isSelected}
+                      aria-controls="immunization-details"
+                      onclick={handleImmunizationSelect}
+                    >
+                      <span class="record-copy">
+                        <span class="immunization-copy-heading">
+                          <span class="vaccine-marker" aria-hidden="true">
+                            <lightning-icon
+                              icon-name="utility:shield"
+                              size="x-small"
+                              alternative-text=""
+                            ></lightning-icon>
+                          </span>
+                          <span class="record-title"
+                            >{item.Vaccine_Name__c}</span
+                          >
+                        </span>
+                        <span class="record-meta">
+                          <template lwc:if={item.Dose__c}
+                            ><strong>Dose:</strong> {item.Dose__c}</template
+                          >
+                          <template lwc:if={item.Dose__c}
+                            ><template lwc:if={item.Date_Administered__c}>
+                              ·
+                            </template></template
+                          >
+                          <template lwc:if={item.Date_Administered__c}
+                            ><strong>Given:</strong>
+                            <lightning-formatted-date-time
+                              value={item.Date_Administered__c}
+                              year="numeric"
+                              month="short"
+                              day="2-digit"
+                              time-zone="UTC"
+                            ></lightning-formatted-date-time
+                          ></template>
+                          <template lwc:else
+                            ><strong>Administration date:</strong> Not
+                            recorded</template
+                          >
+                        </span>
+                      </span>
+                      <span
+                        class="record-status status-neutral immunization-date-status"
+                      >
+                        <template lwc:if={item.Next_Due_Date__c}>
+                          <strong>Next dose:</strong>
+                          &nbsp;
+                          <lightning-formatted-date-time
+                            value={item.Next_Due_Date__c}
+                            year="numeric"
+                            month="short"
+                            day="2-digit"
+                            time-zone="UTC"
+                          ></lightning-formatted-date-time>
+                        </template>
+                        <template lwc:else
+                          ><strong>Next dose:</strong> No date
+                          recorded</template
+                        >
+                      </span>
+                      <lightning-icon
+                        icon-name="utility:chevronright"
+                        size="x-small"
+                        alternative-text="View immunization"
+                      ></lightning-icon>
+                    </button>
+                  </li>
+                </template>
+              </ul>
+              <template lwc:if={hasMoreImmunizations}
+                ><p class="list-limit-note">
+                  Showing the 50 most recently recorded immunizations.
+                </p></template
+              >
+              <template lwc:if={selectedImmunization}>
+                <article
+                  id="immunization-details"
+                  class="detail-panel"
+                  aria-labelledby="immunization-detail-heading"
+                >
+                  <div class="section-heading">
+                    <div>
+                      <p class="eyebrow">IMMUNIZATION DETAILS</p>
+                      <h2 id="immunization-detail-heading">
+                        {selectedImmunization.Vaccine_Name__c}
+                      </h2>
+                    </div>
+                    <button
+                      class="text-action"
+                      type="button"
+                      onclick={clearImmunizationSelection}
+                    >
+                      Close
+                    </button>
+                  </div>
+                  <dl class="medical-details">
+                    <div class="medical-field">
+                      <dt>Dose</dt>
+                      <dd>
+                        <template lwc:if={selectedImmunization.Dose__c}
+                          >{selectedImmunization.Dose__c}</template
+                        ><template lwc:else>Not recorded</template>
+                      </dd>
+                    </div>
+                    <div class="medical-field">
+                      <dt>Date administered</dt>
+                      <dd>
+                        <template
+                          lwc:if={selectedImmunization.Date_Administered__c}
+                          ><lightning-formatted-date-time
+                            value={selectedImmunization.Date_Administered__c}
+                            year="numeric"
+                            month="long"
+                            day="2-digit"
+                            time-zone="UTC"
+                          ></lightning-formatted-date-time></template
+                        ><template lwc:else>Not recorded</template>
+                      </dd>
+                    </div>
+                    <div class="medical-field">
+                      <dt>Next due date</dt>
+                      <dd>
+                        <template lwc:if={selectedImmunization.Next_Due_Date__c}
+                          ><lightning-formatted-date-time
+                            value={selectedImmunization.Next_Due_Date__c}
+                            year="numeric"
+                            month="long"
+                            day="2-digit"
+                            time-zone="UTC"
+                          ></lightning-formatted-date-time></template
+                        ><template lwc:else
+                          >No next-dose date recorded.</template
+                        >
+                      </dd>
+                    </div>
+                  </dl>
+                </article>
+              </template>
+            </template>
+            <template lwc:else>
+              <div class="empty-state">
+                <p>No immunization records yet.</p>
+                <span
+                  >When a dose is recorded by your care team, it will be shown
+                  here.</span
+                >
+              </div>
+            </template>
+          </section>
+        </template>
+
+        <template lwc:if={isRecommendationsPage}>
+          <section class="page-heading">
+            <p class="eyebrow">CARE TEAM GUIDANCE</p>
+            <h1>Recommendations</h1>
+            <p>
+              Doctor instructions from health cases shared with your patient
+              account.
+            </p>
+          </section>
+          <section class="patient-card" aria-label="Doctor recommendations">
+            <template lwc:if={hasRecommendations}>
+              <ul class="record-list">
+                <template for:each={recommendationRows} for:item="item">
+                  <li key={item.Id} class="recommendation-row">
+                    <article class="recommendation-card">
+                      <div class="recommendation-card-heading">
+                        <div>
+                          <p class="eyebrow">HEALTH CASE</p>
+                          <h2>{item.Name}</h2>
+                        </div>
+                        <span class={item.statusBadgeClass}
+                          >{item.caseStatus}</span
+                        >
+                      </div>
+                      <div class="recommendation-context">
+                        <template lwc:if={item.assignedDoctorName}>
+                          <span
+                            ><strong>Assigned doctor:</strong>
+                            &nbsp;{item.assignedDoctorName}</span
+                          >
+                        </template>
+                        <template lwc:if={item.CreatedDate}>
+                          <span>
+                            <strong>Case opened:</strong>
+                            &nbsp;
+                            <lightning-formatted-date-time
+                              value={item.CreatedDate}
+                              year="numeric"
+                              month="short"
+                              day="2-digit"
+                              time-zone="UTC"
+                            ></lightning-formatted-date-time>
+                          </span>
+                        </template>
+                        <template lwc:if={item.diagnosis}>
+                          <span
+                            ><strong>Diagnosis:</strong>
+                            &nbsp;{item.diagnosis}</span
+                          >
+                        </template>
+                      </div>
+                      <div class="recommendation-text">
+                        <p class="recommendation-label">Care team guidance</p>
+                        <p>{item.doctorRecommendation}</p>
+                      </div>
+                      <template lwc:if={item.followUpDate}>
+                        <p class="recommendation-follow-up">
+                          <lightning-icon
+                            icon-name="utility:event"
+                            size="xx-small"
+                            alternative-text=""
+                          ></lightning-icon>
+                          <strong>Follow-up date:</strong>
+                          &nbsp;
+                          <lightning-formatted-date-time
+                            value={item.followUpDate}
+                            year="numeric"
+                            month="short"
+                            day="2-digit"
+                            time-zone="UTC"
+                          ></lightning-formatted-date-time>
+                        </p>
+                      </template>
+                    </article>
+                  </li>
+                </template>
+              </ul>
+            </template>
+            <template lwc:else>
+              <div class="empty-state">
+                <p>No recommendations are recorded.</p>
+                <span
+                  >Instructions shared by your care team will appear here.</span
+                >
+              </div>
+            </template>
+          </section>
+        </template>
+
+        <template lwc:if={isAppointmentsPage}>
+          <section class="page-heading">
+            <p class="eyebrow">YOUR CARE PLAN</p>
+            <h1>Appointments and follow-ups</h1>
+            <p>
+              Track appointments and follow-up dates recorded by your care team.
+            </p>
+            <span class="missed-count-badge">
+              Missed visits: {missedVisitCount}
+            </span>
+          </section>
+          <section
+            class="patient-card appointment-section scheduled-care-section"
+            aria-labelledby="appointments-heading"
+          >
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">SCHEDULED CARE</p>
+                <h2 id="appointments-heading">Upcoming appointments</h2>
+                <p class="section-description">
+                  Your booked visits with the date, time, and care team details.
+                </p>
+              </div>
+            </div>
+            <template lwc:if={hasUpcomingAppointments}>
+              <h3 class="appointment-list-heading">Upcoming</h3>
+              <ul class="record-list appointment-list">
+                <template for:each={upcomingAppointmentRows} for:item="item">
+                  <li key={item.Id} class="record-row selectable-row">
+                    <button
+                      class="record-select appointment-record-select"
+                      type="button"
+                      data-appointment-id={item.Id}
+                      aria-expanded={item.isSelected}
+                      aria-controls={item.detailsId}
+                      onclick={handleAppointmentSelect}
+                    >
+                      <span class="record-copy appointment-record-copy">
+                        <span class="record-title appointment-record-title"
+                          >{item.Name}</span
+                        >
+                        <span class="appointment-record-date">
+                          <lightning-formatted-date-time
+                            value={item.appointmentDate}
+                            year="numeric"
+                            month="long"
+                            day="2-digit"
+                            time-zone="UTC"
+                          ></lightning-formatted-date-time>
+                          <template lwc:if={item.appointmentTime}>
+                            <span class="appointment-time"
+                              >{item.appointmentTime}</span
+                            >
+                          </template>
+                        </span>
+                        <span class="appointment-record-context">
+                          <template lwc:if={item.assignedDoctorName}>
+                            <span class="appointment-context-item"
+                              ><strong>Care team:</strong>
+                              &nbsp;{item.assignedDoctorName}</span
+                            >
+                          </template>
+                          <template lwc:if={item.relatedCaseName}>
+                            <span class="appointment-context-item"
+                              ><strong>Related case:</strong>
+                              &nbsp;{item.relatedCaseName}</span
+                            >
+                          </template>
+                        </span>
+                      </span>
+                      <span class={item.statusBadgeClass}
+                        >{item.appointmentStatus}</span
+                      >
+                    </button>
+                    <template lwc:if={item.isSelected}>
+                      <c-health-connect-appointment-detail
+                        id={item.detailsId}
+                        appointment={item}
+                        onclose={clearAppointmentSelection}
+                      ></c-health-connect-appointment-detail>
+                    </template>
+                  </li>
+                </template>
+              </ul>
+            </template>
+            <template lwc:else>
+              <div class="appointment-empty-state">
+                <p>No upcoming appointments</p>
+                <span>
+                  Any visits scheduled with your care team will appear here.
+                </span>
+              </div>
+            </template>
+          </section>
+          <section
+            class="patient-card appointment-section appointment-history-section"
+            aria-labelledby="appointment-history-heading"
+          >
+            <div class="section-heading appointment-history-heading">
+              <div>
+                <p class="eyebrow">PAST VISITS</p>
+                <h2 id="appointment-history-heading">Appointment history</h2>
+                <p class="section-description">
+                  Review completed and past visits. Choose a date range to
+                  narrow the list.
+                </p>
+              </div>
+              <lightning-combobox
+                class="appointment-history-filter"
+                label="Show completed and past appointments"
+                value={selectedAppointmentHistoryPeriod}
+                options={appointmentHistoryOptions}
+                onchange={handleAppointmentHistoryPeriodChange}
+              ></lightning-combobox>
+            </div>
+            <template lwc:if={hasAppointmentHistoryRecords}>
+              <template lwc:if={hasCancelledAppointments}>
+                <h3 class="appointment-list-heading">Cancelled appointments</h3>
+                <ul class="record-list appointment-list">
+                  <template for:each={cancelledAppointmentRows} for:item="item">
+                    <li key={item.Id} class="record-row selectable-row">
+                      <button
+                        class="record-select appointment-record-select"
+                        type="button"
+                        data-appointment-id={item.Id}
+                        aria-expanded={item.isSelected}
+                        aria-controls={item.detailsId}
+                        onclick={handleAppointmentSelect}
+                      >
+                        <span class="record-copy appointment-record-copy">
+                          <span class="record-title appointment-record-title"
+                            >{item.Name}</span
+                          >
+                          <span class="appointment-record-date">
+                            <template lwc:if={item.appointmentDate}>
+                              <lightning-formatted-date-time
+                                value={item.appointmentDate}
+                                year="numeric"
+                                month="long"
+                                day="2-digit"
+                                time-zone="UTC"
+                              ></lightning-formatted-date-time>
+                            </template>
+                            <template lwc:else>Date not recorded</template>
+                            <template lwc:if={item.appointmentTime}>
+                              <span class="appointment-time"
+                                >{item.appointmentTime}</span
+                              >
+                            </template>
+                          </span>
+                          <template lwc:if={item.assignedDoctorName}>
+                            <span class="appointment-record-context">
+                              <span class="appointment-context-item"
+                                ><strong>Care team:</strong>
+                                &nbsp;{item.assignedDoctorName}</span
+                              >
+                            </span>
+                          </template>
+                        </span>
+                        <span class={item.statusBadgeClass}
+                          >{item.appointmentStatus}</span
+                        >
+                      </button>
+                      <template lwc:if={item.isSelected}>
+                        <c-health-connect-appointment-detail
+                          id={item.detailsId}
+                          appointment={item}
+                          onclose={clearAppointmentSelection}
+                        ></c-health-connect-appointment-detail>
+                      </template>
+                    </li>
+                  </template>
+                </ul>
+              </template>
+              <template lwc:if={hasPastAppointments}>
+                <h3 class="appointment-list-heading">Completed and past</h3>
+                <ul class="record-list appointment-list">
+                  <template for:each={pastAppointmentRows} for:item="item">
+                    <li key={item.Id} class="record-row selectable-row">
+                      <button
+                        class="record-select appointment-record-select"
+                        type="button"
+                        data-appointment-id={item.Id}
+                        aria-expanded={item.isSelected}
+                        aria-controls={item.detailsId}
+                        onclick={handleAppointmentSelect}
+                      >
+                        <span class="record-copy appointment-record-copy">
+                          <span class="record-title appointment-record-title"
+                            >{item.Name}</span
+                          >
+                          <span class="appointment-record-date">
+                            <lightning-formatted-date-time
+                              value={item.appointmentDate}
+                              year="numeric"
+                              month="long"
+                              day="2-digit"
+                              time-zone="UTC"
+                            ></lightning-formatted-date-time>
+                            <template lwc:if={item.appointmentTime}>
+                              <span class="appointment-time"
+                                >{item.appointmentTime}</span
+                              >
+                            </template>
+                          </span>
+                          <span class="appointment-record-context">
+                            <template lwc:if={item.assignedDoctorName}>
+                              <span class="appointment-context-item"
+                                ><strong>Care team:</strong>
+                                &nbsp;{item.assignedDoctorName}</span
+                              >
+                            </template>
+                            <template lwc:if={item.relatedCaseName}>
+                              <span class="appointment-context-item"
+                                ><strong>Related case:</strong>
+                                &nbsp;{item.relatedCaseName}</span
+                              >
+                            </template>
+                          </span>
+                        </span>
+                        <span class={item.statusBadgeClass}
+                          >{item.appointmentStatus}</span
+                        >
+                      </button>
+                      <template lwc:if={item.isSelected}>
+                        <c-health-connect-appointment-detail
+                          id={item.detailsId}
+                          appointment={item}
+                          onclose={clearAppointmentSelection}
+                        ></c-health-connect-appointment-detail>
+                      </template>
+                    </li>
+                  </template>
+                </ul>
+              </template>
+              <template lwc:if={hasUndatedAppointments}>
+                <h3 class="appointment-list-heading">Date not recorded</h3>
+                <ul class="record-list appointment-list">
+                  <template for:each={undatedAppointmentRows} for:item="item">
+                    <li key={item.Id} class="record-row selectable-row">
+                      <button
+                        class="record-select appointment-record-select"
+                        type="button"
+                        data-appointment-id={item.Id}
+                        aria-expanded={item.isSelected}
+                        aria-controls={item.detailsId}
+                        onclick={handleAppointmentSelect}
+                      >
+                        <span class="record-copy appointment-record-copy">
+                          <span class="record-title appointment-record-title"
+                            >{item.Name}</span
+                          >
+                          <span class="appointment-record-date">
+                            <template lwc:if={item.appointmentTime}>
+                              <span class="appointment-time"
+                                >{item.appointmentTime}</span
+                              >
+                            </template>
+                            <template lwc:else>Date not recorded</template>
+                          </span>
+                          <span class="appointment-record-context">
+                            <template lwc:if={item.assignedDoctorName}>
+                              <span class="appointment-context-item"
+                                ><strong>Care team:</strong>
+                                &nbsp;{item.assignedDoctorName}</span
+                              >
+                            </template>
+                            <template lwc:if={item.relatedCaseName}>
+                              <span class="appointment-context-item"
+                                ><strong>Related case:</strong>
+                                &nbsp;{item.relatedCaseName}</span
+                              >
+                            </template>
+                          </span>
+                        </span>
+                        <span class={item.statusBadgeClass}
+                          >{item.appointmentStatus}</span
+                        >
+                      </button>
+                      <template lwc:if={item.isSelected}>
+                        <c-health-connect-appointment-detail
+                          id={item.detailsId}
+                          appointment={item}
+                          onclose={clearAppointmentSelection}
+                        ></c-health-connect-appointment-detail>
+                      </template>
+                    </li>
+                  </template>
+                </ul>
+              </template>
+              <template lwc:if={hasMoreAppointments}>
+                <p class="list-limit-note">
+                  Some appointments are not shown here; the total above includes
+                  all records.
+                </p>
+              </template>
+              <template lwc:if={showEmptyAppointmentHistory}>
+                <div class="appointment-empty-state">
+                  <p>No appointments in this history period</p>
+                  <span>Try a longer date range to see earlier visits.</span>
+                </div>
+              </template>
+            </template>
+            <template lwc:else>
+              <div class="appointment-empty-state">
+                <p>No appointment history recorded</p>
+                <span>Completed and past visits will appear here.</span>
+              </div>
+            </template>
+          </section>
+          <section class="patient-card appointment-follow-up-section">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">CARE PLAN</p>
+                <h2>Case follow-ups</h2>
+              </div>
+            </div>
+            <template lwc:if={hasFollowUps}>
+              <p class="follow-up-note">
+                Follow-up labels are based on the recorded date and case status;
+                the record does not contain a separate follow-up completion
+                status.
+              </p>
+              <ol class="follow-up-list">
+                <template for:each={followUpRows} for:item="item">
+                  <li key={item.Id} class="follow-up-item">
+                    <span class="follow-up-marker" aria-hidden="true"></span>
+                    <article class="follow-up-card">
+                      <div class="follow-up-card-heading">
+                        <div>
+                          <p class="eyebrow">HEALTH CASE</p>
+                          <h3>{item.Name}</h3>
+                        </div>
+                        <span class={item.statusBadgeClass}
+                          >{item.followUpState}</span
+                        >
+                      </div>
+                      <p class="record-meta">
+                        <strong>Follow-up date:</strong>
+                        &nbsp;
+                        <lightning-formatted-date-time
+                          value={item.followUpDate}
+                          year="numeric"
+                          month="long"
+                          day="2-digit"
+                          time-zone="UTC"
+                        ></lightning-formatted-date-time>
+                      </p>
+                      <template lwc:if={item.assignedDoctorName}>
+                        <p class="record-meta">
+                          <strong>Assigned doctor:</strong>
+                          &nbsp;{item.assignedDoctorName}
+                        </p>
+                      </template>
+                      <template lwc:if={item.diagnosis}>
+                        <p class="record-meta">
+                          <strong>Diagnosis:</strong> &nbsp;{item.diagnosis}
+                        </p>
+                      </template>
+                    </article>
+                  </li>
+                </template>
+              </ol>
+              <template lwc:if={hasMoreFollowUps}>
+                <p class="list-limit-note">
+                  Additional follow-ups may be linked to older health cases.
+                </p>
+              </template>
+            </template>
+            <template lwc:else
+              ><div class="empty-state">
+                <p>No case follow-up dates are recorded.</p>
+                <span
+                  >Follow-up dates shared by your care team will appear
+                  here.</span
+                >
+              </div></template
+            >
+          </section>
+          <section
+            class="patient-card appointment-section missed-visits-section"
+            aria-labelledby="missed-visits-heading"
+          >
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">MISSED CARE</p>
+                <h2 id="missed-visits-heading">Missed visits</h2>
+                <p class="section-description">
+                  Past appointments that are still marked Scheduled or
+                  Rescheduled appear here as missed.
+                </p>
+              </div>
+              <span class="missed-count-badge">{missedVisitCount} missed</span>
+            </div>
+            <template lwc:if={hasMissedVisits}>
+              <ul class="record-list appointment-list">
+                <template for:each={missedVisitRows} for:item="item">
+                  <li key={item.Id} class="record-row selectable-row">
+                    <button
+                      class="record-select appointment-record-select"
+                      type="button"
+                      data-appointment-id={item.Id}
+                      aria-expanded={item.isSelected}
+                      aria-controls={item.detailsId}
+                      onclick={handleAppointmentSelect}
+                    >
+                      <span class="record-copy appointment-record-copy">
+                        <span class="record-title appointment-record-title"
+                          >{item.Name}</span
+                        >
+                        <span class="appointment-record-date">
+                          <lightning-formatted-date-time
+                            value={item.appointmentDate}
+                            year="numeric"
+                            month="long"
+                            day="2-digit"
+                            time-zone="UTC"
+                          ></lightning-formatted-date-time>
+                          <template lwc:if={item.appointmentTime}>
+                            <span class="appointment-time"
+                              >{item.appointmentTime}</span
+                            >
+                          </template>
+                        </span>
+                        <span class="appointment-record-context">
+                          <template lwc:if={item.assignedDoctorName}>
+                            <span class="appointment-context-item"
+                              ><strong>Care team:</strong>
+                              &nbsp;{item.assignedDoctorName}</span
+                            >
+                          </template>
+                          <template lwc:if={item.relatedCaseName}>
+                            <span class="appointment-context-item"
+                              ><strong>Related case:</strong>
+                              &nbsp;{item.relatedCaseName}</span
+                            >
+                          </template>
+                        </span>
+                      </span>
+                      <span class={item.statusBadgeClass}
+                        >{item.appointmentStatus}</span
+                      >
+                    </button>
+                    <template lwc:if={item.isSelected}>
+                      <c-health-connect-appointment-detail
+                        id={item.detailsId}
+                        appointment={item}
+                        onclose={clearAppointmentSelection}
+                      ></c-health-connect-appointment-detail>
+                    </template>
+                  </li>
+                </template>
+              </ul>
+              <template lwc:if={hasMoreMissedVisits}>
+                <p class="list-limit-note">
+                  Showing the 50 most recent missed visits. The count includes
+                  all missed visits.
+                </p>
+              </template>
+            </template>
+            <template lwc:else>
+              <div class="appointment-empty-state">
+                <p>No missed visits</p>
+                <span>
+                  Past appointments marked Completed or Cancelled are not
+                  counted as missed.
+                </span>
+              </div>
+            </template>
+          </section>
+        </template>
+
+        <template lwc:if={isMessagesPage}>
+          <section class="page-heading">
+            <p class="eyebrow">CARE REMINDERS</p>
+            <h1>Messages</h1>
+            <p>
+              View care reminders and notification notes recorded for your
+              patient account.
+            </p>
+          </section>
+          <section class="notice-panel" role="note">
+            <lightning-icon
+              icon-name="utility:info"
+              size="small"
+              alternative-text=""
+            ></lightning-icon>
+            <p>
+              Secure inbound messaging is not available in this portal yet. For
+              a response from your care team, contact your community health
+              worker directly.
+            </p>
+          </section>
+          <section class="patient-card" aria-label="Care notifications">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">NOTIFICATIONS</p>
+                <h2>Care reminders</h2>
+              </div>
+            </div>
+            <template lwc:if={hasReminders}>
+              <ul class="record-list">
+                <template for:each={dashboard.reminders} for:item="item">
+                  <li key={item.Id} class="record-row">
+                    <div class="record-copy">
+                      <p class="record-title">{item.Reminder_Type__c}</p>
+                      <p class="record-meta">
+                        <strong>Due:</strong>
+                        &nbsp;
+                        <lightning-formatted-date-time
+                          value={item.Due_Date__c}
+                          year="numeric"
+                          month="short"
+                          day="2-digit"
+                          time-zone="UTC"
+                        ></lightning-formatted-date-time>
+                        · <strong>Status:</strong>
+                        &nbsp;{item.Reminder_Status__c}
+                      </p>
+                      <template lwc:if={item.Reminder_Notes__c}
+                        ><p class="record-meta reminder-notes">
+                          {item.Reminder_Notes__c}
+                        </p></template
+                      >
+                    </div>
+                  </li>
+                </template>
+              </ul>
+            </template>
+            <template lwc:else
+              ><div class="empty-state">
+                <p>No care reminders are recorded.</p>
+                <span
+                  >New reminders shared with your account will appear
+                  here.</span
+                >
+              </div></template
+            >
+          </section>
+        </template>
+
+        <template lwc:if={isHelpPage}>
+          <section class="page-heading">
+            <p class="eyebrow">SUPPORT</p>
+            <h1>Help Center</h1>
+            <p>Quick answers about using your HealthConnect patient portal.</p>
+          </section>
+          <section class="patient-card help-center">
+            <article class="help-item">
+              <h2>Why can’t I see my health information?</h2>
+              <p>
+                Your patient profile must be verified and linked to your portal
+                account by a community health worker before clinical records are
+                shown.
+              </p>
+            </article>
+            <article class="help-item">
+              <h2>Where can I find my care team’s instructions?</h2>
+              <p>
+                Open Recommendations to view doctor instructions shared through
+                your health cases. Appointment-related instructions are also
+                shown in appointment details when available.
+              </p>
+            </article>
+            <article class="help-item">
+              <h2>Can I send a message or book an appointment here?</h2>
+              <p>
+                Secure inbound messaging and patient appointment booking are not
+                currently available in this portal. Contact your community
+                health worker for assistance.
+              </p>
+            </article>
+            <article class="help-item">
+              <h2>How do I correct information in my profile?</h2>
+              <p>
+                Contact your community health worker to review or update patient
+                information.
+              </p>
+            </article>
+          </section>
+        </template>
+
+        <footer class="portal-footer">
+          <lightning-icon
+            icon-name="utility:lock"
+            size="xx-small"
+            alternative-text=""
+          ></lightning-icon>
+          <span
+            >Your health information is private and securely shared with your
+            care team.</span
+          >
+        </footer>
+      </template>
+    </section>
+  </main>
+</template>

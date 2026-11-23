@@ -1,0 +1,77 @@
+/*
+ * Your global styles here
+ */
+html,
+body {
+  height: 100%;
+}
+
+html {
+  background: #f3f8f7;
+  scrollbar-gutter: stable;
+  --dxp-g-brand: #087f82 !important;
+  --slds-c-button-brand-color-background: #087f82;
+  --slds-c-button-brand-color-background-hover: #06666a;
+  --slds-c-button-brand-color-border: #087f82;
+  --slds-c-button-brand-color-border-hover: #06666a;
+  --slds-c-button-brand-text-color: #ffffff;
+  --slds-c-input-color-border: #cad9d7;
+  --slds-c-input-color-background: #f8fbfa;
+  --slds-c-input-color-border-focus: #087f82;
+  --slds-c-input-radius-border: 12px;
+  --slds-c-input-shadow: none;
+  --slds-c-input-shadow-focus: 0 0 0 3px rgb(8 127 130 / 16%);
+  --slds-c-card-radius-border: 22px;
+  --slds-c-card-shadow: 0 24px 64px rgb(22 50 58 / 12%);
+  --slds-g-color-brand-base-50: #087f82 !important;
+  --slds-g-color-brand-base-40: #06666a !important;
+  --slds-g-color-brand-base-30: #05565a !important;
+}
+
+body {
+  margin: 0;
+  color: #16323a;
+  background:
+    radial-gradient(ellipse at 10% 0%, rgb(194 230 220 / 28%), transparent 34%),
+    #f3f8f7;
+}
+
+community_layout-section {
+  display: block;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: clamp(1rem, 4vw, 3.25rem);
+}
+
+@media (min-width: 761px) {
+  c-health-connect-portal-login {
+    position: relative;
+    left: -34px;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  community_login-self-register {
+    position: relative;
+    left: -34px;
+    display: block;
+    width: min(100%, 400px);
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  community_layout-section {
+    padding: 1rem;
+  }
+}
+
+community_layout-section:has(c-health-connect-patient-dashboard) {
+  width: 100%;
+  max-width: none;
+  flex: 1 1 100%;
+  margin: 0;
+  padding: 1rem;
+  box-sizing: border-box;
+}

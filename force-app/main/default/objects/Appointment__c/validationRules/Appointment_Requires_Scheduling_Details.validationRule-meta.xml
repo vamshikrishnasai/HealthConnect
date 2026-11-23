@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Appointment_Requires_Scheduling_Details</fullName>
+    <active>true</active>
+    <description>A scheduled appointment must be linked to a patient and Health Case and have an appointment date and time.</description>
+    <errorConditionFormula>OR(
+    ISBLANK(Patient__c),
+    ISBLANK(Health_Case__c),
+    ISBLANK(Appointment_Date__c),
+    ISBLANK(TEXT(Appointment_Time__c))
+)</errorConditionFormula>
+    <errorMessage>Enter a Patient, Health Case, Appointment Date, and Appointment Time before saving.</errorMessage>
+</ValidationRule>

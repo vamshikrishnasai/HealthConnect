@@ -1,0 +1,100 @@
+{
+  "type": "sfdc_cms__view",
+  "title": "Forgot Password",
+  "contentBody": {
+    "component": {
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "04bb636a-2d2d-5261-8f02-24928d326844",
+      "type": "component",
+      "children": [
+        {
+          "id": "70803325-3fee-59ce-b925-491bcf51d0b7",
+          "name": "content",
+          "title": "Content",
+          "type": "region",
+          "children": [
+            {
+              "definition": "community_layout:section",
+              "id": "594d069b-97c3-5e0e-b522-465e46827ddb",
+              "type": "component",
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "column",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"594d069b-97c3-5e0e-b522-465e46827ddb\",\"columns\":[{\"UUID\":\"9c3090c7-05f3-5fd6-9db9-86a2538a6242\",\"columnName\":\"Reset Password\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "center"
+              },
+              "children": [
+                {
+                  "id": "9c3090c7-05f3-5fd6-9db9-86a2538a6242",
+                  "name": "col1",
+                  "title": "Reset Password",
+                  "type": "region",
+                  "children": [
+                    {
+                      "definition": "dxp_content_layout:siteLogo",
+                      "id": "29ef3252-f43b-5dc7-8434-fe91fd341a76",
+                      "type": "component",
+                      "attributes": {
+                        "alignment": "left",
+                        "dxpStyle": {},
+                        "imageInfo": "",
+                        "imageInfoMobile": "",
+                        "logoWidth": 250
+                      }
+                    },
+                    {
+                      "definition": "community_login:forgotPassword",
+                      "id": "4380f5a7-9d22-5576-9c5a-4e929e04d238",
+                      "type": "component",
+                      "attributes": {
+                        "cancelButtonLabel": "Back to login",
+                        "checkEmailUrl": "./CheckPasswordResetEmail",
+                        "dxpStyle": {},
+                        "instructionsLabel": "Enter your username and we will send a password reset link to the email address associated with your doctor account.",
+                        "submitButtonLabel": "Reset password",
+                        "titleLabel": "Forgot your password?",
+                        "usernameLabel": "Username"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "66b54b6a-127c-5767-8854-529520aeea82",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region",
+          "children": [
+            {
+              "definition": "community_builder:seoAssistant",
+              "id": "8ac934ec-09f8-5d8b-842c-1386a035af52",
+              "type": "component",
+              "attributes": {
+                "customHeadTags": "",
+                "description": "Secure password reset for HealthConnect doctors.",
+                "dxpStyle": {},
+                "pageTitle": "Forgot Password | HealthConnect Doctor Portal",
+                "recordId": "{!recordId}"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "forgot-password"
+  },
+  "urlName": "forgot-password"
+}

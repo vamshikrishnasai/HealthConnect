@@ -1,0 +1,97 @@
+{
+  "type": "sfdc_cms__view",
+  "title": "Check Password",
+  "contentBody": {
+    "component": {
+      "definition": "community_layout:sldsFlexibleLayout",
+      "id": "46191874-7609-5035-add7-657c55abf9cc",
+      "type": "component",
+      "children": [
+        {
+          "id": "03a5492e-6b75-5caf-9e96-8db52bb2996c",
+          "name": "content",
+          "title": "Content",
+          "type": "region",
+          "children": [
+            {
+              "definition": "community_layout:section",
+              "id": "aa7f4a50-bea5-5054-a3b2-61376d71dfac",
+              "type": "component",
+              "attributes": {
+                "backgroundImageConfig": "",
+                "backgroundImageOverlay": "rgba(0,0,0,0)",
+                "componentSpacerSize": "",
+                "dxpStyle": {},
+                "layoutDirectionDesktop": "row",
+                "layoutDirectionMobile": "column",
+                "layoutDirectionTablet": "column",
+                "maxContentWidth": "",
+                "sectionColumnGutterWidth": "",
+                "sectionConfig": "{\"UUID\":\"aa7f4a50-bea5-5054-a3b2-61376d71dfac\",\"columns\":[{\"UUID\":\"c3ec0d4a-05ce-5bf7-a77d-3d421adeee4a\",\"columnName\":\"Check Email\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+                "sectionMinHeight": "",
+                "sectionVerticalAlign": "center"
+              },
+              "children": [
+                {
+                  "id": "c3ec0d4a-05ce-5bf7-a77d-3d421adeee4a",
+                  "name": "col1",
+                  "title": "Check Email",
+                  "type": "region",
+                  "children": [
+                    {
+                      "definition": "dxp_content_layout:siteLogo",
+                      "id": "c2bb0a9f-301b-5251-a8cd-8ecba1fc459f",
+                      "type": "component",
+                      "attributes": {
+                        "alignment": "left",
+                        "dxpStyle": {},
+                        "imageInfo": "",
+                        "imageInfoMobile": "",
+                        "logoWidth": 250
+                      }
+                    },
+                    {
+                      "definition": "community_login:checkEmail",
+                      "id": "1e308177-e00f-555a-a752-e863dca44f16",
+                      "type": "component",
+                      "attributes": {
+                        "checkEmailMessage": "Check the email associated with your doctor portal username for a secure password reset link. If it does not arrive, check your Spam folder or contact your HealthConnect administrator.",
+                        "dxpStyle": {},
+                        "returnButtonLabel": "Back to login",
+                        "titleLabel": "Check your email"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "57d32d74-a237-5794-abb6-b2122ac72c7d",
+          "name": "sfdcHiddenRegion",
+          "title": "sfdcHiddenRegion",
+          "type": "region",
+          "children": [
+            {
+              "definition": "community_builder:seoAssistant",
+              "id": "855cf7f9-4bb7-5af9-a8d6-35faa80a113a",
+              "type": "component",
+              "attributes": {
+                "customHeadTags": "",
+                "description": "Secure password reset for HealthConnect doctors.",
+                "dxpStyle": {},
+                "pageTitle": "Check Email | HealthConnect Doctor Portal",
+                "recordId": "{!recordId}"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "dataProviders": [],
+    "themeLayoutType": "Inner",
+    "viewType": "check-password"
+  },
+  "urlName": "check-password"
+}

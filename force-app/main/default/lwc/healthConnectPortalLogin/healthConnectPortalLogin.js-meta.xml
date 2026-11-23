@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>67.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>HealthConnect Portal Login</masterLabel>
+    <description>Patient portal login form with username and password placeholders.</description>
+    <targets>
+        <target>lightningCommunity__Page</target>
+        <target>lightningCommunity__Default</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightningCommunity__Default">
+            <property
+                name="showSelfRegister"
+                type="Boolean"
+                label="Show self-registration link"
+                default="true"
+            />
+            <property
+                name="blueTheme"
+                type="Boolean"
+                label="Use blue portal theme"
+                default="false"
+            />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

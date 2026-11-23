@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Current_Status__c</fullName>
+    <formula
+  >IF(AND(NOT(ISBLANK(Next_Due_Date__c)), Next_Due_Date__c &lt;= TODAY()), "Due", "Completed")</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Current Status</label>
+    <type>Text</type>
+</CustomField>

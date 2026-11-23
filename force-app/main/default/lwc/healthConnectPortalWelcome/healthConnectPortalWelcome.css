@@ -1,0 +1,168 @@
+:host {
+  display: block;
+  color: #16323a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.welcome {
+  position: relative;
+  max-width: 540px;
+  min-height: 460px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  padding: clamp(2rem, 5vw, 3.5rem);
+  border: 1px solid rgb(255 255 255 / 65%);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 90% 10%, rgb(136 216 199 / 40%), transparent 30%),
+    linear-gradient(145deg, #e4f5f0 0%, #f5fbf8 55%, #eaf4f5 100%);
+  box-shadow: 0 24px 70px rgb(19 72 74 / 11%);
+}
+
+.welcome--wide {
+  width: 100%;
+  max-width: 640px;
+  margin-left: 26px;
+  padding-left: clamp(3.5rem, 6vw, 4.5rem);
+}
+
+.welcome::after {
+  position: absolute;
+  right: -95px;
+  bottom: -125px;
+  width: 300px;
+  height: 300px;
+  border: 1px solid rgb(8 127 130 / 10%);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.logo-frame {
+  width: min(100%, 220px);
+  margin-bottom: 2.2rem;
+  overflow: hidden;
+  border: 1px solid #e3eceb;
+  border-radius: 15px;
+  background: #ffffff;
+  box-shadow: 0 12px 30px rgb(20 65 70 / 8%);
+}
+
+.logo-frame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.eyebrow {
+  margin: 0 0 0.7rem;
+  color: #087f82;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+h1 {
+  margin: 0;
+  color: #16323a;
+  font-size: clamp(2.2rem, 4vw, 3.35rem);
+  font-weight: 700;
+  letter-spacing: -0.045em;
+  line-height: 1.04;
+}
+
+.description {
+  max-width: 440px;
+  margin: 1.1rem 0 0;
+  color: #61777d;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+.benefits {
+  display: grid;
+  gap: 0.8rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  color: #294b50;
+  font-size: 0.88rem;
+  list-style: none;
+}
+
+.benefits li,
+.privacy-note {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.benefits lightning-icon {
+  --slds-c-icon-color-foreground-default: #087f82;
+}
+
+.privacy-note {
+  margin: 1.6rem 0 0;
+  color: #71868a;
+  font-size: 0.78rem;
+}
+
+.privacy-note lightning-icon {
+  --slds-c-icon-color-foreground-default: #087f82;
+}
+
+@media (max-width: 760px) {
+  .welcome {
+    max-width: 560px;
+    min-height: 0;
+    padding: 1.4rem;
+    border-radius: 20px;
+  }
+
+  .welcome--wide {
+    max-width: 560px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 1.4rem;
+  }
+
+  .logo-frame {
+    width: min(55vw, 190px);
+    margin: 0 auto 1rem;
+  }
+
+  .eyebrow,
+  h1,
+  .description,
+  .privacy-note {
+    text-align: center;
+  }
+
+  .benefits {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    max-width: 400px;
+    margin: 1rem auto 0;
+    text-align: left;
+  }
+
+  .benefits li {
+    font-size: 0.8rem;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .description {
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .privacy-note {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "appPageId": "1657d1b9-1286-45c9-b379-4c3d20ae33ee",
+  "componentName": "siteforce:sldsOneColLayout",
+  "dataProviders": [],
+  "id": "8f1dd740-39ed-49d5-9e7f-b8a6099640ce",
+  "label": "Login",
+  "regions": [
+    {
+      "components": [
+        {
+          "componentAttributes": {},
+          "componentName": "c:healthConnectPortalWelcome",
+          "id": "c94a5bed-3daf-45ee-8926-94d91ab29427",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        },
+        {
+          "componentAttributes": {
+            "forgotPasswordLabel": "Forgot your password?",
+            "forgotPasswordUrl": "/ForgotPassword",
+            "loginButtonLabel": "Sign in",
+            "passwordLabel": "Password",
+            "selfRegisterLabel": "Not a member? Create an account",
+            "selfRegisterUrl": "/SelfRegister",
+            "startUrl": "",
+            "usernameLabel": "Email or username"
+          },
+          "componentName": "salesforceIdentity:loginForm2",
+          "id": "2d7538db-29ad-4471-8705-a912bad68ba7",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        },
+        {
+          "componentAttributes": {
+            "employeeLoginLinkLabel": "Are you an employee? Login here"
+          },
+          "componentName": "salesforceIdentity:employeeLoginLink2",
+          "id": "4bbe6628-0752-4405-bd99-820967e53779",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        }
+      ],
+      "id": "b8c33b78-8d0f-44f9-97f7-f55793a39ce8",
+      "regionName": "content",
+      "type": "region"
+    },
+    {
+      "components": [
+        {
+          "componentAttributes": {
+            "customHeadTags": "",
+            "description": "",
+            "title": "Login"
+          },
+          "componentName": "forceCommunity:seoAssistant",
+          "id": "c1a79b4e-9d01-4774-978f-211c24aae18f",
+          "renditionMap": {},
+          "type": "component"
+        }
+      ],
+      "id": "27d0fe6f-18be-43b2-8d73-c79a2484b0d4",
+      "regionName": "sfdcHiddenRegion",
+      "type": "region"
+    }
+  ],
+  "themeLayoutType": "Login",
+  "type": "view",
+  "viewType": "login-home"
+}

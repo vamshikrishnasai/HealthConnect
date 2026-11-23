@@ -1,0 +1,75 @@
+:host {
+  display: block;
+  width: min(100%, 500px);
+  margin: 1rem auto 0;
+  color: #16323a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.access-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid #dcebe8;
+  border-radius: 14px;
+  background: #f5faf9;
+}
+
+.eyebrow {
+  margin: 0 0 0.25rem;
+  color: #087f82;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+
+.prompt-description {
+  margin: 0;
+  color: #61777d;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.auth-link {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 40px;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid #b8d9d3;
+  border-radius: 9px;
+  color: #06666a;
+  background: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    transform 150ms ease;
+}
+
+.auth-link:hover {
+  transform: translateY(-1px);
+  border-color: #087f82;
+  background: #eaf6f3;
+}
+
+.auth-link:focus-visible {
+  outline: 3px solid #41a8a0;
+  outline-offset: 3px;
+}
+
+.auth-link lightning-icon {
+  --slds-c-icon-color-foreground-default: currentColor;
+}
+
+@media (max-width: 480px) {
+  .access-prompt {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

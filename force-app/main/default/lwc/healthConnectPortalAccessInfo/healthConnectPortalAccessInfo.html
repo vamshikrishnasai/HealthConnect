@@ -1,0 +1,38 @@
+<template>
+  <section class="access-card" aria-labelledby="access-heading">
+    <span class="access-icon">
+      <lightning-icon
+        icon-name="utility:lock"
+        size="small"
+        alternative-text=""
+      ></lightning-icon>
+    </span>
+    <p class="eyebrow">GET STARTED</p>
+    <h1 id="access-heading">Request portal access</h1>
+    <p class="description">
+      To protect your health information, accounts are set up by the
+      HealthConnect care team. Contact your community health worker and ask them
+      to connect your patient profile to your email address.
+    </p>
+    <div class="next-step">
+      <lightning-icon
+        icon-name="utility:info"
+        size="x-small"
+        alternative-text=""
+      ></lightning-icon>
+      <p>
+        Once your account is ready, you’ll receive instructions to sign in
+        securely.
+      </p>
+    </div>
+    <a class="sign-in-link" href={loginUrl}>Already have access? Sign in</a>
+    <p class="privacy-note">
+      <lightning-icon
+        icon-name="utility:shield"
+        size="xx-small"
+        alternative-text=""
+      ></lightning-icon>
+      Your medical information stays private and protected.
+    </p>
+  </section>
+</template>

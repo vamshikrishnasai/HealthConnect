@@ -1,0 +1,30 @@
+<template>
+  <lightning-quick-action-panel header="Doctor Portal Account">
+    <p class="slds-p-horizontal_medium">
+      This action creates or retries the doctor’s secured Experience Cloud
+      account. Salesforce will initiate password setup after provisioning;
+      delivery is not guaranteed by this action.
+    </p>
+    <template lwc:if={isProvisioning}>
+      <lightning-spinner
+        alternative-text="Provisioning doctor portal account"
+      ></lightning-spinner>
+    </template>
+    <template lwc:if={message}>
+      <div class={messageClass} role={messageRole}>{message}</div>
+    </template>
+    <div slot="footer">
+      <lightning-button
+        label="Close"
+        onclick={closeAction}
+        class="slds-m-right_small"
+      ></lightning-button>
+      <lightning-button
+        label={buttonLabel}
+        variant="brand"
+        onclick={provisionAccount}
+        disabled={isProvisioning}
+      ></lightning-button>
+    </div>
+  </lightning-quick-action-panel>
+</template>

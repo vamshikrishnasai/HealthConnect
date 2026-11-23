@@ -1,0 +1,12 @@
+{
+  "type": "sfdc_cms__route",
+  "title": "My Immunizations",
+  "contentBody": {
+    "activeViewId": "My_Immunizations",
+    "configurationTags": [],
+    "pageAccess": "UseParent",
+    "routeType": "custom-my-immunizations",
+    "urlPrefix": "my-immunizations"
+  },
+  "urlName": "my-immunizations"
+}

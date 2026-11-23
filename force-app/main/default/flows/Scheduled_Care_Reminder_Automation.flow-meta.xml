@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>68.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <assignments>
+        <name>Reservation_Stopped</name>
+        <label>Reservation Stopped - No Email</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignmentItems>
+            <assignToReference>Reservation_Stop_Diagnostic</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <stringValue>Attempt exists or reservation failed; no email was sent by this flow.</stringValue>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <decisions>
+        <name>Check_Reminder_Due_Date</name>
+        <label>Check Reminder Due Date</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnectorLabel>Future Due Date</defaultConnectorLabel>
+        <rules>
+            <name>Reminder_Due_Date_Is_Missing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Due_Date__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Mark_Reminder_Missing_Due_Date</targetReference>
+            </connector>
+            <label>Due Date Is Missing</label>
+        </rules>
+        <rules>
+            <name>Reminder_Is_Due</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Due_Date__c</leftValueReference>
+                <operator>LessThanOrEqualTo</operator>
+                <rightValue>
+                    <elementReference>Current_Date</elementReference>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Existing_Notification_Attempt</targetReference>
+            </connector>
+            <label>Reminder Is Due</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Attempt_Already_Reserved</name>
+        <label>Check Attempt Already Reserved</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <defaultConnector>
+            <targetReference>Create_Notification_Attempt</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No Existing Attempt</defaultConnectorLabel>
+        <rules>
+            <name>Attempt_Already_Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>Get_Existing_Notification_Attempt.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Reservation_Stopped</targetReference>
+            </connector>
+            <label>Attempt Already Exists</label>
+        </rules>
+    </decisions>
+    <description>Daily scheduled flow that reserves one notification attempt for each due Pending Care Reminder. It never sends email; the attempt record-triggered Flow handles asynchronous processing after the reservation commits.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>Current_Date</name>
+        <dataType>Date</dataType>
+        <expression>$Flow.CurrentDate</expression>
+    </formulas>
+    <interviewLabel>Scheduled Care Reminder Automation {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Scheduled Care Reminder Automation</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordCreates>
+        <name>Create_Notification_Attempt</name>
+        <label>Create Notification Attempt</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Reservation_Stopped</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Care_Reminder__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Reminder_Key__c</field>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Attempt_Status__c</field>
+            <value>
+                <stringValue>Reserved</stringValue>
+            </value>
+        </inputAssignments>
+        <object>Care_Reminder_Notification_Attempt__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Existing_Notification_Attempt</name>
+        <label>Get Existing Notification Attempt</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Attempt_Already_Reserved</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Reservation_Stopped</targetReference>
+        </faultConnector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Reminder_Key__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Id</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Care_Reminder_Notification_Attempt__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordUpdates>
+        <name>Mark_Reminder_Missing_Due_Date</name>
+        <label>Mark Reminder Missing Due Date</label>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <faultConnector>
+            <targetReference>Reservation_Stopped</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Notification_Outcome__c</field>
+            <value>
+                <stringValue>Missing Due Date</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Notification_Diagnostic__c</field>
+            <value>
+                <stringValue>No due date is available. Add a due date and reconcile before processing.</stringValue>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>0</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Check_Reminder_Due_Date</targetReference>
+        </connector>
+        <filterLogic>1 AND (2 OR 3)</filterLogic>
+        <filters>
+            <field>Reminder_Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Pending</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Notification_Outcome__c</field>
+            <operator>IsNull</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Notification_Outcome__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Not Processed</stringValue>
+            </value>
+        </filters>
+        <object>Care_Reminder__c</object>
+        <schedule>
+            <frequency>Daily</frequency>
+            <startDate>2026-10-13</startDate>
+            <startTime>15:00:00.000Z</startTime>
+        </schedule>
+        <triggerType>Scheduled</triggerType>
+    </start>
+    <status>Draft</status>
+    <variables>
+        <name>Reservation_Stop_Diagnostic</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>68.0</apiVersion>
+    <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
+    <customErrors>
+        <name>Reject_Missing_Due_Date</name>
+        <label>Reject Missing Due Date</label>
+        <locationX>440</locationX>
+        <locationY>350</locationY>
+        <customErrorMessages>
+            <errorMessage>A due date is required for a Pending care reminder.</errorMessage>
+            <fieldSelection>Due_Date__c</fieldSelection>
+            <isFieldError>true</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <customErrors>
+        <name>Reject_Unsupported_Reminder_Type</name>
+        <label>Reject Unsupported Reminder Type</label>
+        <locationX>700</locationX>
+        <locationY>210</locationY>
+        <customErrorMessages>
+            <errorMessage>Select a supported care reminder type: Follow-up, Immunization, or Routine Check-up.</errorMessage>
+            <fieldSelection>Reminder_Type__c</fieldSelection>
+            <isFieldError>true</isFieldError>
+        </customErrorMessages>
+    </customErrors>
+    <decisions>
+        <name>Check_Due_Date</name>
+        <label>Check Due Date</label>
+        <locationX>440</locationX>
+        <locationY>210</locationY>
+        <rules>
+            <name>Due_Date_Is_Missing</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Due_Date__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Reject_Missing_Due_Date</targetReference>
+            </connector>
+            <label>Due Date Is Missing</label>
+        </rules>
+        <defaultConnectorLabel>Due Date Is Present</defaultConnectorLabel>
+    </decisions>
+    <decisions>
+        <name>Route_Reminder_Type</name>
+        <label>Route Reminder Type</label>
+        <locationX>300</locationX>
+        <locationY>100</locationY>
+        <defaultConnector>
+            <targetReference>Reject_Unsupported_Reminder_Type</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Unsupported Reminder Type</defaultConnectorLabel>
+        <rules>
+            <name>Follow_Up_Reminder</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Reminder_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Follow-up</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_Due_Date</targetReference>
+            </connector>
+            <label>Follow-up</label>
+        </rules>
+        <rules>
+            <name>Immunization_Reminder</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Reminder_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Immunization</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_Due_Date</targetReference>
+            </connector>
+            <label>Immunization</label>
+        </rules>
+        <rules>
+            <name>Routine_Check_up_Reminder</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Reminder_Type__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Routine Check-up</stringValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Check_Due_Date</targetReference>
+            </connector>
+            <label>Routine Check-up</label>
+        </rules>
+    </decisions>
+    <description>Before-save validation for newly created Pending care reminders. Required fields and the restricted status picklist enforce Patient, Reminder Type, and valid status; this flow requires a due date without changing records, creating reminders, or sending email.</description>
+    <environments>Default</environments>
+    <interviewLabel>Care Reminder Processing {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Care Reminder Processing</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Route_Reminder_Type</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Reminder_Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Pending</stringValue>
+            </value>
+        </filters>
+        <object>Care_Reminder__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>

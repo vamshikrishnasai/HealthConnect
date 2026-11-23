@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>68.0</apiVersion>
+    <choices>
+        <name>Appointment_Time_0900_AM</name>
+        <choiceText>09:00 AM</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>09:00 AM</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Appointment_Time_1000_AM</name>
+        <choiceText>10:00 AM</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>10:00 AM</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Appointment_Time_1100_AM</name>
+        <choiceText>11:00 AM</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>11:00 AM</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Appointment_Time_0200_PM</name>
+        <choiceText>02:00 PM</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>02:00 PM</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Appointment_Time_0300_PM</name>
+        <choiceText>03:00 PM</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>03:00 PM</stringValue>
+        </value>
+    </choices>
+    <choices>
+        <name>Appointment_Time_0400_PM</name>
+        <choiceText>04:00 PM</choiceText>
+        <dataType>String</dataType>
+        <value>
+            <stringValue>04:00 PM</stringValue>
+        </value>
+    </choices>
+    <environments>Default</environments>
+    <formulas>
+        <name>Appointment_Error_Message</name>
+        <dataType>String</dataType>
+        <expression>IF(
+    CONTAINS({!$Flow.FaultMessage}, "This doctor already has an appointment scheduled"),
+    "This doctor already has an appointment scheduled for this date and time. Choose a different time.",
+    IF(
+        CONTAINS({!$Flow.FaultMessage}, "already has an active appointment"),
+        "This Health Case already has an active appointment. Complete or cancel it before scheduling another appointment.",
+        "The appointment could not be scheduled. Check the details and try again."
+    )
+)</expression>
+    </formulas>
+    <interviewLabel
+  >Schedule Appointment From Case {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Schedule Appointment From Case</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>Flow</processType>
+    <decisions>
+        <name>Check_Appointment_Required</name>
+        <label>Check Appointment Required</label>
+        <locationX>176</locationX>
+        <locationY>206</locationY>
+        <defaultConnector>
+            <targetReference>Appointment_Not_Required</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>Appointment not required</defaultConnectorLabel>
+        <rules>
+            <name>Appointment_Is_Required</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference
+        >Get_Health_Case.Appointment_Required__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <booleanValue>true</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Get_Active_Appointment</targetReference>
+            </connector>
+            <label>Appointment required</label>
+        </rules>
+    </decisions>
+    <decisions>
+        <name>Check_Active_Appointment</name>
+        <label>Check Active Appointment</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <defaultConnector>
+            <targetReference>Enter_Appointment_Details</targetReference>
+        </defaultConnector>
+        <defaultConnectorLabel>No active appointment</defaultConnectorLabel>
+        <rules>
+            <name>Active_Appointment_Exists</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference
+        >Get_Active_Appointment.Id</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Appointment_Already_Active</targetReference>
+            </connector>
+            <label>Active appointment exists</label>
+        </rules>
+    </decisions>
+    <recordCreates>
+        <name>Create_Appointment</name>
+        <label>Create Appointment</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <connector>
+            <targetReference>Appointment_Created</targetReference>
+        </connector>
+        <faultConnector>
+            <targetReference>Appointment_Creation_Failed</targetReference>
+        </faultConnector>
+        <inputAssignments>
+            <field>Patient__c</field>
+            <value>
+                <elementReference>Get_Health_Case.Patient__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Health_Case__c</field>
+            <value>
+                <elementReference>Get_Health_Case.Id</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Assigned_Doctor__c</field>
+            <value>
+                <elementReference
+        >Get_Health_Case.Assigned_Doctor__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Appointment_Date__c</field>
+            <value>
+                <elementReference>Appointment_Date</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Appointment_Time__c</field>
+            <value>
+                <elementReference>Appointment_Time</elementReference>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Appointment_Status__c</field>
+            <value>
+                <stringValue>Scheduled</stringValue>
+            </value>
+        </inputAssignments>
+        <inputAssignments>
+            <field>Appointment_Notes__c</field>
+            <value>
+                <elementReference>Appointment_Notes</elementReference>
+            </value>
+        </inputAssignments>
+        <object>Appointment__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordCreates>
+    <recordLookups>
+        <name>Get_Health_Case</name>
+        <label>Get Health Case</label>
+        <locationX>176</locationX>
+        <locationY>134</locationY>
+        <assignNullValuesIfNoRecordsFound
+    >false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Appointment_Required</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>recordId</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Health_Case__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <recordLookups>
+        <name>Get_Active_Appointment</name>
+        <label>Get Active Appointment</label>
+        <locationX>176</locationX>
+        <locationY>278</locationY>
+        <assignNullValuesIfNoRecordsFound
+    >false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Check_Active_Appointment</targetReference>
+        </connector>
+        <filterLogic>1 AND (2 OR 3)</filterLogic>
+        <filters>
+            <field>Health_Case__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>Get_Health_Case.Id</elementReference>
+            </value>
+        </filters>
+        <filters>
+            <field>Appointment_Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Scheduled</stringValue>
+            </value>
+        </filters>
+        <filters>
+            <field>Appointment_Status__c</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>Rescheduled</stringValue>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Appointment__c</object>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <screens>
+        <name>Enter_Appointment_Details</name>
+        <label>Schedule Appointment</label>
+        <locationX>176</locationX>
+        <locationY>206</locationY>
+        <allowBack>true</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>true</allowPause>
+        <connector>
+            <targetReference>Create_Appointment</targetReference>
+        </connector>
+        <fields>
+            <name>Appointment_Date</name>
+            <dataType>Date</dataType>
+            <fieldText>Appointment Date</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>Appointment_Time</name>
+            <choiceReferences>Appointment_Time_0900_AM</choiceReferences>
+            <choiceReferences>Appointment_Time_1000_AM</choiceReferences>
+            <choiceReferences>Appointment_Time_1100_AM</choiceReferences>
+            <choiceReferences>Appointment_Time_0200_PM</choiceReferences>
+            <choiceReferences>Appointment_Time_0300_PM</choiceReferences>
+            <choiceReferences>Appointment_Time_0400_PM</choiceReferences>
+            <dataType>String</dataType>
+            <fieldText>Appointment Time</fieldText>
+            <fieldType>DropdownBox</fieldType>
+            <isRequired>true</isRequired>
+        </fields>
+        <fields>
+            <name>Appointment_Notes</name>
+            <dataType>String</dataType>
+            <fieldText>Appointment Notes</fieldText>
+            <fieldType>InputField</fieldType>
+            <isRequired>false</isRequired>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Appointment_Created</name>
+        <label>Appointment Scheduled</label>
+        <locationX>176</locationX>
+        <locationY>350</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Confirmation_Message</name>
+            <fieldText
+      >&lt;p&gt;The appointment has been scheduled for this Health Case.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Appointment_Creation_Failed</name>
+        <label>Appointment Could Not Be Scheduled</label>
+        <locationX>416</locationX>
+        <locationY>350</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Appointment_Error_Display</name>
+            <fieldText
+      >&lt;p style=&quot;color: #ba0517; font-weight: 700;&quot;&gt;{!Appointment_Error_Message}&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Appointment_Already_Active</name>
+        <label>Appointment Already Scheduled</label>
+        <locationX>440</locationX>
+        <locationY>422</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Active_Appointment_Message</name>
+            <fieldText
+      >&lt;p&gt;This Health Case already has an active appointment. Complete or cancel it before scheduling another appointment.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <screens>
+        <name>Appointment_Not_Required</name>
+        <label>Appointment Not Required</label>
+        <locationX>704</locationX>
+        <locationY>278</locationY>
+        <allowBack>false</allowBack>
+        <allowFinish>true</allowFinish>
+        <allowPause>false</allowPause>
+        <fields>
+            <name>Not_Required_Message</name>
+            <fieldText
+      >&lt;p&gt;An appointment is not marked as required for this Health Case.&lt;/p&gt;</fieldText>
+            <fieldType>DisplayText</fieldType>
+        </fields>
+        <showFooter>true</showFooter>
+        <showHeader>true</showHeader>
+    </screens>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Health_Case</targetReference>
+        </connector>
+    </start>
+    <status>Active</status>
+    <variables>
+        <name>recordId</name>
+        <dataType>String</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+    </variables>
+</Flow>

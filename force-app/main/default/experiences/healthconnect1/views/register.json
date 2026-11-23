@@ -1,0 +1,96 @@
+{
+  "appPageId": "1657d1b9-1286-45c9-b379-4c3d20ae33ee",
+  "componentName": "siteforce:sldsOneColLayout",
+  "dataProviders": [],
+  "id": "aafb1868-1b75-431a-8db4-925b118994a6",
+  "label": "Register",
+  "regions": [
+    {
+      "components": [
+        {
+          "componentAttributes": {},
+          "componentName": "salesforceIdentity:communityLogo2",
+          "id": "3a0590c6-2a52-4f67-934b-80b663da2f57",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        },
+        {
+          "componentAttributes": {
+            "richTextValue": "<div style=\"text-align: center;\" class=\"inverseTextColor\">Create a secure HealthConnect patient portal account.</div>"
+          },
+          "componentName": "forceCommunity:richTextInline",
+          "id": "4f8159fd-859f-4177-b507-5a626a9cc958",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        },
+        {
+          "componentAttributes": {
+            "confirmPasswordLabel": "Confirm Password",
+            "emailLabel": "Email",
+            "extraFieldsFieldSet": "",
+            "firstnameLabel": "First Name",
+            "includePasswordField": true,
+            "lastnameLabel": "Last Name",
+            "passwordLabel": "Create Password",
+            "regConfirmUrl": "./CheckPasswordResetEmail",
+            "startUrl": "",
+            "submitButtonLabel": "Sign Up"
+          },
+          "componentName": "salesforceIdentity:selfRegister2",
+          "id": "cf869256-6a30-46b1-8aa6-160ff4c0857e",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        },
+        {
+          "componentAttributes": {
+            "headerText": "",
+            "showHeader": false,
+            "useCommunityDomainSso": true
+          },
+          "componentName": "salesforceIdentity:socialLogin2",
+          "id": "10e75e71-8d25-4a57-801d-526a45dd590a",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        },
+        {
+          "componentAttributes": {
+            "richTextValue": "<div style=\"text-align: center;\"><a class=\"inverseTextColor\" href=\"./\">Already have an account?</a></div>"
+          },
+          "componentName": "forceCommunity:richTextInline",
+          "id": "c9cf8759-0f5a-420a-85ab-f3ed1b8327b2",
+          "renderPriority": "NEUTRAL",
+          "renditionMap": {},
+          "type": "component"
+        }
+      ],
+      "id": "4b07efb1-ad07-4a43-9d0b-7d58a832800d",
+      "regionName": "content",
+      "type": "region"
+    },
+    {
+      "components": [
+        {
+          "componentAttributes": {
+            "customHeadTags": "",
+            "description": "",
+            "title": "Register"
+          },
+          "componentName": "forceCommunity:seoAssistant",
+          "id": "0219be0a-8808-495a-83d8-5d1c67ec0eef",
+          "renditionMap": {},
+          "type": "component"
+        }
+      ],
+      "id": "6149cc82-0e61-41f9-9f8a-ff0d6ecb2dee",
+      "regionName": "sfdcHiddenRegion",
+      "type": "region"
+    }
+  ],
+  "themeLayoutType": "Login",
+  "type": "view",
+  "viewType": "self-register"
+}
