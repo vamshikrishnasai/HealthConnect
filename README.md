@@ -1,13 +1,13 @@
  <div align="center">
 
-<img src="image.png" alt="HealthConnect Logo" width="180"/>
+  <img src="image.png" alt="HealthConnect Logo" width="180" />
 
-# HealthConnect
-### Community Healthcare Outreach Platform
+  <h1>HealthConnect</h1>
+  <h3>Community Healthcare Outreach Platform</h3>
 
-**Connecting Communities to Better Healthcare Through Salesforce**
+  <p><strong>Connecting Communities to Better Healthcare Through Salesforce</strong></p>
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg" alt="Salesforce Logo" width="150"/>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Salesforce.com_logo.svg" alt="Salesforce Logo" width="150" />
 
 </div>
 
@@ -20,7 +20,7 @@
 The platform connects four main user groups:
 
 | User Role | Responsibilities |
-|---|---|
+|:---|:---|
 | 🧑‍⚕️ **Health Workers** | Register patients, maintain patient information, and create health cases based on symptoms and medical history. |
 | 🩺 **Doctors** | Review assigned cases, provide medical recommendations, and identify patients requiring follow-up care. |
 | 🧑 **Patients** | Access their health information and available healthcare services through a secure Experience Cloud portal. |
@@ -95,7 +95,7 @@ HealthConnect aims to reduce manual record keeping, improve coordination between
 ## 🛠️ Technology Stack
 
 | Technology | Purpose |
-|---|---|
+|:---|:---|
 | **Salesforce Platform** | Core cloud platform for application data, users, security, and automation. |
 | **Salesforce Custom Objects & Fields** | Store patients, health workers, doctors, health centres, cases, appointments, immunizations, and reminders. |
 | **Salesforce Flow Builder** | Automate health-case initialization and eligible care reminder creation. |
@@ -116,7 +116,7 @@ HealthConnect aims to reduce manual record keeping, improve coordination between
 HealthConnect uses eight custom Salesforce objects to organize healthcare information.
 
 | Custom Object | Description |
-|---|---|
+|:---|:---|
 | `Patient__c` | Stores patient details and notification preferences. |
 | `Health_Worker__c` | Stores health worker details and health-centre association. |
 | `Doctor__c` | Stores doctor details, specialization, and health-centre association. |
@@ -131,41 +131,41 @@ HealthConnect uses eight custom Salesforce objects to organize healthcare inform
 ## 🔄 Application Workflow
 
 ```text
-        Patient Registration
-                 |
-                 v
-       Health Worker Creates
-             Health Case
-                 |
-                 v
-        Case Submitted for
-              Review
-                 |
-                 v
-          Doctor Reviews
-             the Case
-                 |
-                 v
-       Medical Recommendations
-                 |
-                 v
-       Appointment / Follow-up
-             Scheduling
-                 |
-                 v
-       Immunization & Care
-          Tracking
-                 |
-                 v
-       Automated Reminder
-             Creation
-                 |
-                 v
-       Patient Experience
-              Portal
-                 |
-                 v
-       Reports & Dashboards
+             Patient Registration
+                      |
+                      v
+          Health Worker Creates
+                Health Case
+                      |
+                      v
+             Case Submitted
+               for Review
+                      |
+                      v
+               Doctor Reviews
+                 the Case
+                      |
+                      v
+           Medical Recommendations
+                      |
+                      v
+           Appointment / Follow-up
+                Scheduling
+                      |
+                      v
+           Immunization & Care
+                 Tracking
+                      |
+                      v
+           Automated Reminder
+                  Creation
+                      |
+                      v
+             Patient Experience
+                   Portal
+                      |
+                      v
+             Reports & Dashboards
 ```
 
 ### Workflow Explanation
@@ -190,9 +190,9 @@ The objective of HealthConnect is to support more organized, accessible, and pro
 
 <div align="center">
 
-### HealthConnect
-**Connecting Communities to Better Care 💙**
+  <h3>HealthConnect 💙</h3>
+  <strong>Connecting Communities to Better Care</strong>
 
-*Outreach Programme | Salesforce-Based Healthcare Solution*
+  <p><em>Outreach Programme | Salesforce-Based Healthcare Solution</em></p>
 
 </div>
